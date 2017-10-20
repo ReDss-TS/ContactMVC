@@ -1,13 +1,11 @@
 <?php
 
-include_once 'includes/autoloadClasses.php';
-$sessions = new Sessions;
-$bodyPage = '';
-$bodyPage .= $sessions->showMessages();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-$requestMethod = basename($_SERVER['REQUEST_URI']);
-$requestMethod = substr($requestMethod, 0, strpos($requestMethod, "."));
+//system files
+require_once('core/Router.php');
 
-$bodyPage .= Pages::getInstance()->$requestMethod();
-
-include_once 'includes/body.php';
+//call Router;
+$router = new Router();
+$router->start();
