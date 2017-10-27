@@ -1,6 +1,6 @@
 <?php
 
-class Include_DB
+class Includes_DB
 {
     public $dbConf;
     public $conn;

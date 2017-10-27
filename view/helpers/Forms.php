@@ -1,6 +1,6 @@
 <?php
 
-abstract class Forms
+abstract class view_helpers_Forms
 {
     //array with input data and results of validation and radioButtons;
     protected $data = [];

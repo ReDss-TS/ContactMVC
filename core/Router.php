@@ -1,8 +1,12 @@
 <?php
 
-class Router
+class Core_Router
 {
     private $routes;
+
+    // default controller Name/controller action Name
+    private $defControllerName = "Contact";
+    private $defActionName = "Index";
 
     public function __construct()
     {
@@ -19,12 +23,13 @@ class Router
         if (!empty($_SERVER['REQUEST_URI'])) {
             return trim($_SERVER['REQUEST_URI'], '/');
         }
+        return "$this->defControllerName/$this->defActionName";
     }
 
     public function start()
     {
-        $controllerName = 'Contact'; // default controller Name
-        $actionName = 'Index'; // default controller action Name
+        $controllerName = $this->defControllerName;
+        $actionName = $this->defActionName;
 
         $uri = $this->getURI();
         $uri = filter_var($uri, FILTER_SANITIZE_URL);
@@ -32,7 +37,7 @@ class Router
         $uri = explode('/', $uri);
 
         if ( !empty($uri[1]) ) {    
-            $controllerName = $uri[2];
+            $controllerName = $uri[1];
         }
 
         if ( !empty($uri[2]) ) {
@@ -42,22 +47,21 @@ class Router
         $controllerFile = "controller/" . ucfirst($controllerName) . ".php";
 
         if (file_exists($controllerFile)) {
-            $result = makeAction($controllerName, $actionName);
-        } else ($this->findRouteAction($controllerName) == null) {
-            throw new Exception("The file: $controllerName Does not exists.");
+            $result = $this->makeAction($controllerName, $actionName);
+        } elseif ($this->findRouteAction($controllerName) == null) {
             $this->ErrorPage404();
         }
     }
 
     private function makeAction($controllerName, $actionName)
     {
-          $result = null;
-           $controllerObject = new $controllerName;
+        $controllerName = "controller_$controllerName";
+        $result = null;
+        $controllerObject = new $controllerName;
         $actionName = 'action' . ucfirst($actionName);
         if (method_exists($controllerObject, $actionName)) {
-              $result = $controllerObject->$actionName();
-        } else {
-            throw new Exception("The action: $actionName Does not exists.");    
+            $result = $controllerObject->$actionName();
+        } else {    
             $this->ErrorPage404();
         }
         return $result;
@@ -65,14 +69,14 @@ class Router
 
     private function findRouteAction($name)
     {    
-          $result = null;
-          foreach ($this->routes as $uriPattern => $value) {
-               if ($name == $uriPattern) {
-                   $controllerName = ucfirst($value['controller']);
-                   $result = makeAction($controllerName, $value['action'])
-               }
-           }
-           return $result;
+        $result = null;
+        foreach ($this->routes as $uriPattern => $value) {
+            if ($name == $uriPattern) {
+                $controllerName = ucfirst($value['controller']);
+                $result = $this->makeAction($controllerName, $value['action']);
+            }
+        }
+        return $result;
     }
 
     public function ErrorPage404()

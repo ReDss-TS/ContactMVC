@@ -6,10 +6,10 @@ class Core_Controller
 	protected $view;
 	protected $model;
 
-    private function __construct()
+    protected function __construct()
     {
         //$this->className = substr(get_class($this), strpos(get_class($this), "_")+1); // name of Controller's Class
-        $this->view = new View();
+        $this->view = new Core_View();
     }
 
     public function actionIndex()

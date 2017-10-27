@@ -11,7 +11,12 @@
         </div>
         <hr/>
 
-        <?php include 'view/'.$Content; ?>
+        <?php
+            $session = new View_Helpers_Sessions(); 
+            $form = new $template($data);
+            echo $session->showMessages();
+            echo $form->render();
+        ?>
     
     </body>
 </html>

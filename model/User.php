@@ -5,9 +5,9 @@ class Model_User extends Core_Model
     public function selectPasswordByLogin($login)
     {
         $dataForEscape['login'] = $login;
-        $escapedData = Include_DB::getInstance()->escapeData($dataForEscape);
+        $escapedData = Includes_DB::getInstance()->escapeData($dataForEscape);
         $selectQuery = "SELECT * FROM users where login = '" . $escapedData['login'] . "'";
-        $resultSelect = Include_DB::getInstance()->selectFromDB($selectQuery);
+        $resultSelect = Includes_DB::getInstance()->selectFromDB($selectQuery);
         return $resultSelect;
     }
 
@@ -16,10 +16,72 @@ class Model_User extends Core_Model
         $dataForEscape = [];
         $dataForEscape['login'] = $login;
         $dataForEscape['pass'] = $pass;
-        $escapedData = Include_DB::getInstance()->escapeData($dataForEscape);
+        $escapedData = Includes_DB::getInstance()->escapeData($dataForEscape);
 
         $insertUserQuery = "INSERT INTO users (login, pass) VALUES ('" . $escapedData['login'] . "', '" . $escapedData['pass'] . "');";
-        $resultInsert = Include_DB::getInstance()->insertToDB($insertUserQuery);
+        $resultInsert = Includes_DB::getInstance()->insertToDB($insertUserQuery);
         return $resultInsert;
     }
+
+    public function authentication($ulogin, $upass)
+    {   
+        $msg = [
+            'is_auth' => false,
+            'user' => '',
+            'login' => true,
+            'pass' => true
+        ];
+
+        $upass = md5($upass);
+        $selectedUserData = $this->selectLogin($ulogin, $upass);
+        if (is_array($selectedUserData)) {
+                if ($selectedUserData[0]['pass'] === $upass) {
+                    $msg['is_auth'] = true;
+                    $msg['user'] = $selectedUserData;
+                } else {
+                    $msg['is_auth'] = false;
+                    $msg['pass'] = false;
+                }
+        } elseif ($selectedUserData->num_rows == 0) {
+            $msg['is_auth'] = false;
+            $msg['login'] = false;
+        } 
+        return $msg;
+    }
+
+    private function selectLogin($ulogin, $upass)
+    {
+        $selectedPasswordByLogin = $this->selectPasswordByLogin($ulogin);
+        return $selectedPasswordByLogin;
+    }
+
+
+    public function register($ulogin, $upass) //TODO
+    {   
+        $msg = [];
+        $upass = md5(trim($upass));
+        $selectedLogin = $this->createSelectLoginQuery($ulogin);
+        if (is_array($selectedLogin)) {
+            $msg['msg'] = 'login is busy! Please enter another login';
+        } else {
+            $insertedUser = $this->createInsertUserQuery($ulogin, $upass);
+            if ($insertedUser === true) {
+                $msg['msg'] = 'You have successfully registered!';
+            } else {
+                throw new Exception('Error: User data not included');
+            }           
+        }
+        return $msg;
+    }
+
+    private function createSelectLoginQuery($ulogin)
+    {
+        return $this->selectPasswordByLogin($ulogin);
+    }
+
+    private function createInsertUserQuery($ulogin, $upass)
+    {
+        return $this->insertUserIntoDB($ulogin, $upass);
+    }
+
 }

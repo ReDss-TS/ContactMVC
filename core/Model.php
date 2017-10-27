@@ -1,6 +1,6 @@
 <?php
 
-class Model
+class Core_Model
 {
     public function get_data()
     {

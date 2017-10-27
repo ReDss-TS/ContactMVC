@@ -1,6 +1,6 @@
 <?php
 
-class LoginForm extends Forms
+class view_LoginForm extends view_helpers_Forms
 {
     //elements for html form
     protected $elements  = [
