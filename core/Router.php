@@ -36,12 +36,12 @@ class Core_Router
         $uri = rtrim($uri, '/');
         $uri = explode('/', $uri);
 
-        if ( !empty($uri[1]) ) {    
-            $controllerName = $uri[1];
+        if ( !empty($uri[0]) ) {    
+            $controllerName = $uri[0];
         }
 
-        if ( !empty($uri[2]) ) {
-            $actionName = $uri[2];
+        if ( !empty($uri[1]) ) {
+            $actionName = $uri[1];
         }
 
         $controllerFile = "controller/" . ucfirst($controllerName) . ".php";

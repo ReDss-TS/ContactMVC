@@ -12,7 +12,7 @@ class Model_Contact extends Core_Model
         }
     }
 
-    public function selectDataForMainPage(Ц)
+    public function selectDataForMainPage()
     {
         $userId = $this->getUserID();
         $selectQuery = "SELECT contact_list.id, contact_list.firstName, contact_list.lastName, contact_list.email, contact_phones.phone
@@ -25,4 +25,40 @@ class Model_Contact extends Core_Model
         $resultSelect = Includes_DB::getInstance()->selectFromDB($selectQuery);
         return $resultSelect;
     }
+
+    public function sanitizeSpecialChars($data)
+    {
+        $filteredResult = [];
+        $keys = [];
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                if (is_array($value)) {
+                    $result = $this->sanitizeSpecialChars($value); 
+                    $filteredResult[$key] = $result;
+                } else {
+                    $filteredResult[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                }
+            }
+            return $filteredResult;
+        }
+    }
+
+    public function deleteContacts($idLine)
+    {
+        $forEscape['idLine'] = $idLine;
+        $escapedData = Includes_DB::getInstance()->escapeData($forEscape);
+        $userId = $this->getUserID();
+        return Includes_DB::getInstance()->delete("DELETE FROM contact_list WHERE id = '" . $escapedData['idLine'] . "'AND userId = '" . $userId . "'");
+    }
+
+    public function isDeleted($statement)
+    {
+        if ($statement == true) {
+            $sessions->recordMessageInSession('delete', $data['deleted'] = false);
+            header("Location: index.php");
+        } else {
+            $sessions->recordMessageInSession('delete', $data['notDelete'] = false);
+        }
+    }
+    
 }

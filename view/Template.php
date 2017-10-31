@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="styles/style.css" rel="stylesheet" type="text/css"/>
+        <link href="/styles/style.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <div class="header" id="myHead">
@@ -13,7 +13,7 @@
 
         <?php
             $session = new View_Helpers_Sessions(); 
-            $form = new $template($data);
+            $form = new $content($data);
             echo $session->showMessages();
             echo $form->render();
         ?>

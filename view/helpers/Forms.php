@@ -19,7 +19,7 @@ abstract class view_helpers_Forms
     {
         $form = "
             <div class = 'editBlock' id = 'editBlock'>
-                <form method = 'post' action=" . $this->elements['actionFile'] . ".php>
+                <form method = 'post' action=''>
                 <div class = 'editBlockHead' id = 'editBlockHead'>
                     <h2>
                         " . $this->elements['header'] . "
@@ -62,7 +62,7 @@ abstract class view_helpers_Forms
         $backBtn = $this->elements['backBtn'];
         $btns = "<br/>
                 <input class = 'button' type = 'submit' name = '" . $submitBtn . "Btn' value = '$submitBtn'/>
-                <a href = '$backBtn.php' class='button'>$backBtn</a>";
+                <a href = '/$backBtn' class='button'>$backBtn</a>";
         return $btns;
     }
 

@@ -19,7 +19,7 @@ class Controller_User extends Core_Controller
             header("Location: index.php");
         }
         //generate('class with render form', 'main html file', 'data')
-        $this->view->generate('view_LoginForm', 'template', $data);
+        $this->view->generate('view_LoginForm', 'template', $data=null);
 
     }
 

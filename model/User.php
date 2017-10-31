@@ -28,8 +28,8 @@ class Model_User extends Core_Model
         $msg = [
             'is_auth' => false,
             'user' => '',
-            'login' => true,
-            'pass' => true
+            'login' => false,
+            'pass' => false
         ];
 
         $upass = md5($upass);
@@ -40,11 +40,11 @@ class Model_User extends Core_Model
                     $msg['user'] = $selectedUserData;
                 } else {
                     $msg['is_auth'] = false;
-                    $msg['pass'] = false;
+                    $msg['pass'] = true;
                 }
         } elseif ($selectedUserData->num_rows == 0) {
             $msg['is_auth'] = false;
-            $msg['login'] = false;
+            $msg['login'] = true;
         } 
         return $msg;
     }
@@ -62,11 +62,11 @@ class Model_User extends Core_Model
         $upass = md5(trim($upass));
         $selectedLogin = $this->createSelectLoginQuery($ulogin);
         if (is_array($selectedLogin)) {
-            $msg['msg'] = 'login is busy! Please enter another login';
+            $msg['busyLogin'] = true;
         } else {
             $insertedUser = $this->createInsertUserQuery($ulogin, $upass);
             if ($insertedUser === true) {
-                $msg['msg'] = 'You have successfully registered!';
+                $msg['registered'] = true;
             } else {
                 throw new Exception('Error: User data not included');
             }           

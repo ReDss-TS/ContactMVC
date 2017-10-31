@@ -1,11 +1,10 @@
 <?php
 
-class view_LoginForm extends view_helpers_Forms
+class View_LoginForm extends View_Helpers_Forms
 {
     //elements for html form
     protected $elements  = [
             'header'     => 'Login',
-            'actionFile' => 'Login',
             'submitBtn'  => 'Enter',
             'backBtn'    => 'Register'
     ];

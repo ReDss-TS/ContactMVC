@@ -10,7 +10,7 @@ class View_Helpers_Sessions
                 $messages .= "<label class = \"msg\">$value</label><br/>";
             }
         }
-        unset($_SESSION['message']);
+        //unset($_SESSION['message']);
         return $messages;
     }
 }

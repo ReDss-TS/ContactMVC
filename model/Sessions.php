@@ -1,7 +1,18 @@
 <?php
 
 class Model_Sessions extends Core_Model
-{
+{   
+    protected $msgs = [
+        'login'      => 'Login is incorrect',
+        'pass'       => 'Password is incorrect',
+        'deleted'    => 'Record deleted successfully!',
+        'notDelete'  => 'Record has not been deleted!',
+        'busyLogin'  => 'Login is busy! Please enter another login',
+        'registered' => 'You have successfully registered!',
+
+
+    ];
+
     public function issetLogin() 
     {
         if (isset($_SESSION['login'])) {
@@ -29,10 +40,12 @@ class Model_Sessions extends Core_Model
     {
         //should be in the view
         $msg = '';
-        if ($data['login'] == false) {
-            $msg = 'Login is incorrect';
-        } elseif ($data['pass'] == false) {
-            $msg = 'Password is incorrect!';
+        foreach ($msgs as $key => $value) {
+            if (isset($data['$key'])) {
+                if ($data['$key'] == true) {
+                   $msg = $value;
+                }
+            }
         }
         return $msg;
     }
