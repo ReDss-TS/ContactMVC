@@ -1,6 +1,6 @@
 <?php
 
-class Model_Sessions extends Core_Model
+class ModelSessions extends CoreModel
 {   
     protected $msgs = [
         'login'      => 'Login is incorrect',

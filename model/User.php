@@ -1,6 +1,6 @@
 <?php
 
-class Model_User extends Core_Model
+class ModelUser extends CoreModel
 {
     public function selectPasswordByLogin($login)
     {
@@ -37,7 +37,7 @@ class Model_User extends Core_Model
         if (is_array($selectedUserData)) {
                 if ($selectedUserData[0]['pass'] === $upass) {
                     $msg['is_auth'] = true;
-                    $msg['user'] = $selectedUserData;
+                    $msg['user'] = $selectedUserData[0];
                 } else {
                     $msg['is_auth'] = false;
                     $msg['pass'] = true;
@@ -45,7 +45,7 @@ class Model_User extends Core_Model
         } elseif ($selectedUserData->num_rows == 0) {
             $msg['is_auth'] = false;
             $msg['login'] = true;
-        } 
+        }
         return $msg;
     }
 
@@ -82,6 +82,16 @@ class Model_User extends Core_Model
     private function createInsertUserQuery($ulogin, $upass)
     {
         return $this->insertUserIntoDB($ulogin, $upass);
+    }
+
+    public function requireLogin()
+    {
+        $signIn = new Model_Sessions;
+        $isSignIn = $signIn->issetLogin();
+        if (!$isSignIn == true) {
+            header("Location: /user/login");
+        }
+        
     }
 
 }

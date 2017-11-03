@@ -1,12 +1,12 @@
 <?php
 
-class View_RegisterForm extends View_Helpers_Forms
+class ViewRegisterForm extends ViewHelpersForms
 {
     //elements for html form
     protected $elements  = [
             'header'     => 'Register',
             'submitBtn'  => 'Register',
-            'backBtn'    => 'Login'
+            'backBtn'    => 'user/login'
     ];
 
     //structure of the input field

@@ -1,6 +1,6 @@
 <?php
 
-class Core_Router
+class CoreRouter
 {
     private $routes;
 
@@ -14,6 +14,43 @@ class Core_Router
         $this->routes = include($routesPath);
     }
 
+    public function start()
+    {
+        $uri = $this->getURI();
+        $uri = explode('/', rtrim(filter_var($uri, FILTER_SANITIZE_URL), '/'));
+
+        $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0]; //TODO maybe that's not right
+        $uri[1] = (empty($uri[1])) ? $this->defActionName :$uri[1];
+
+        $controllerName = 'Сontroller' . ucfirst($uri[0]) . '.php';
+        $actionName = 'action' . ucfirst($uri[1]);
+        unset($uri[0], $uri[1]);
+        $parametsURI = $uri; //TODO
+
+        if (!class_exists($controllerName)) {
+            foreach ($this->routes as $uriPattern => $value) {
+                if ($controllerName == $uriPattern) {
+                    $controllerName = 'Сontroller' . ucfirst($value['controller']);
+                } else {
+                    throw new ExceptionErrorPage('ErrorPage');
+                }
+            }
+        }
+
+        if (!method_exists($controllerName, $actionName)) {
+            foreach ($this->routes as $uriPattern => $value) {
+                if ($controllerName == $uriPattern) {
+                    $actionName = 'action' . ucfirst($value['action']);
+                } else {
+                    throw new ExceptionErrorPage('ErrorPage');
+                }
+            }
+        }
+
+        $controllerObject = new $controllerName;
+        $controllerObject->$actionName($parametsURI);
+    }
+
     /**
      * Returns REQUEST string
      * @return string
@@ -23,65 +60,7 @@ class Core_Router
         if (!empty($_SERVER['REQUEST_URI'])) {
             return trim($_SERVER['REQUEST_URI'], '/');
         }
-        return "$this->defControllerName/$this->defActionName";
-    }
-
-    public function start()
-    {
-        $controllerName = $this->defControllerName;
-        $actionName = $this->defActionName;
-
-        $uri = $this->getURI();
-        $uri = filter_var($uri, FILTER_SANITIZE_URL);
-        $uri = rtrim($uri, '/');
-        $uri = explode('/', $uri);
-
-        if ( !empty($uri[0]) ) {    
-            $controllerName = $uri[0];
-        }
-
-        if ( !empty($uri[1]) ) {
-            $actionName = $uri[1];
-        }
-
-        $controllerFile = "controller/" . ucfirst($controllerName) . ".php";
-
-        if (file_exists($controllerFile)) {
-            $result = $this->makeAction($controllerName, $actionName);
-        } elseif ($this->findRouteAction($controllerName) == null) {
-            $this->ErrorPage404();
-        }
-    }
-
-    private function makeAction($controllerName, $actionName)
-    {
-        $controllerName = "controller_$controllerName";
-        $result = null;
-        $controllerObject = new $controllerName;
-        $actionName = 'action' . ucfirst($actionName);
-        if (method_exists($controllerObject, $actionName)) {
-            $result = $controllerObject->$actionName();
-        } else {    
-            $this->ErrorPage404();
-        }
-        return $result;
-    }
-
-    private function findRouteAction($name)
-    {    
-        $result = null;
-        foreach ($this->routes as $uriPattern => $value) {
-            if ($name == $uriPattern) {
-                $controllerName = ucfirst($value['controller']);
-                $result = $this->makeAction($controllerName, $value['action']);
-            }
-        }
-        return $result;
-    }
-
-    public function ErrorPage404()
-    {
-
+        return null;
     }
 
 }

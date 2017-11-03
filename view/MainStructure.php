@@ -12,7 +12,7 @@
         <hr/>
 
         <?php
-            $session = new View_Helpers_Sessions(); 
+            $session = new ViewHelpersSessions();
             $form = new $content($data);
             echo $session->showMessages();
             echo $form->render();

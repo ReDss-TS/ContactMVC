@@ -1,9 +1,6 @@
 <?php
 
-class Core_Model
+abstract class CoreModel
 {
-    public function get_data()
-    {
-        
-    }
+	
 }

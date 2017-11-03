@@ -1,6 +1,6 @@
 <?php
 
-abstract class view_helpers_Forms
+abstract class ViewHelpersForms
 {
     //array with input data and results of validation and radioButtons;
     protected $data = [];
@@ -59,10 +59,11 @@ abstract class view_helpers_Forms
     public function submitBtn()
     {
         $submitBtn = $this->elements['submitBtn'];
-        $backBtn = $this->elements['backBtn'];
+        $backLink = $this->elements['backBtn'];
+        $backBtn = explode('/', $backLink);
         $btns = "<br/>
                 <input class = 'button' type = 'submit' name = '" . $submitBtn . "Btn' value = '$submitBtn'/>
-                <a href = '/$backBtn' class='button'>$backBtn</a>";
+                <a href = '/$backLink' class='button'>$backBtn[1]</a>";
         return $btns;
     }
 

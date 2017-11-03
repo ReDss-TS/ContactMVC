@@ -1,6 +1,6 @@
 <?php
 
-class Controller_User extends Core_Controller
+class ControllerUser extends CoreController
 {
 	function __construct()
     {
@@ -9,17 +9,17 @@ class Controller_User extends Core_Controller
 
     public function actionLogin()
     {
-        $sessions = new Model_Sessions;
+        $sessions = new ModelSessions;
 
         if ($_POST) {
             $this->authentication();
         }
 
         if ($sessions->issetLogin() == true) {
-            header("Location: index.php");
+            header("Location: /contact/index");
         }
         //generate('class with render form', 'main html file', 'data')
-        $this->view->generate('view_LoginForm', 'template', $data=null);
+        $this->view->generate('ViewLoginForm', 'MainStructure', $data=null);
 
     }
 
@@ -30,7 +30,7 @@ class Controller_User extends Core_Controller
         $arrayData['user_pass'] = $_POST['user_pass'];
         $authentication = new Model_User();
         $auth = $authentication->authentication($arrayData['user_login'], $arrayData['user_pass']);
-        $auth['is_auth'] == true ? $sessions->authenticationToSession($auth['user']) : $sessions->recordMessageInSession('auth', $auth);
+        $auth['is_auth'] == true ? $sessions->authenticationToSession($auth['user']['id'], $auth['user']['login']) : $sessions->recordMessageInSession('auth', $auth);
     }
 
     public function actionRegister()
@@ -42,10 +42,10 @@ class Controller_User extends Core_Controller
         }
 
         if ($sessions->issetLogin() == true) {
-            header("Location: index.php");
+            header("Location: /contact/index");
         }
         //generate('class with render form', 'main html file', 'data')
-        $this->view->generate('view_RegisterForm', 'template', $formData);
+        $this->view->generate('view_RegisterForm', 'MainStructure', $formData);
     }
 
     private function registration()

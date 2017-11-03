@@ -1,6 +1,6 @@
 <?php
 
-class Model_Contact extends Core_Model
+class ModelContact extends CoreModel
 {
     private function getUserID()
     {    

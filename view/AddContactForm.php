@@ -1,12 +1,12 @@
 <?php
 
-class View_AddContactForm extends View_Helpers_Forms
+class ViewAddContactForm extends ViewHelpersForms
 {
     //elements for html form
     protected $elements  = [
             'header'     => 'Add Contact',
-            'actionFile' => 'insert',
-            'backBtn'    => 'Index'
+            'submitBtn'  => 'Add',
+            'backBtn'    => 'contact/index'
     ];
 
     //structure of the input field

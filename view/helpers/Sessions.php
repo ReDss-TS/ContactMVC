@@ -1,6 +1,6 @@
 <?php
 
-class View_Helpers_Sessions
+class ViewHelpersSessions
 {
     public function showMessages()
     {

@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Contact extends Core_Controller
+class ControllerContact extends CoreController
 {   
     public $labelsOfContact = [
         'user_name',
@@ -26,27 +26,19 @@ class Controller_Contact extends Core_Controller
 
     public function actionIndex()
     {
-        $this->requireLogin();
+        $modelUser = new ModelUser;
+        $modelUser->requireLogin();
         $modelContact = new Model_Contact;
         $selectedDataForMainPage = $modelContact->selectDataForMainPage();
         $sanitizeData = $modelContact->sanitizeSpecialChars($selectDataForMainPage);
         
-        $this->view->generate('View_MainTable', 'template', $data=null);
-    }
-
-    private function requireLogin()
-    {
-        $signIn = new Model_Sessions;
-        $isSignIn = $signIn->issetLogin();
-        if (!$isSignIn == true) {
-            header("Location: user/login"); // don't know how it should be
-        }
-        
+        $this->view->generate('ViewMainPage', 'MainStructure', $data=null);
     }
 
     public function actionDelete()
     {
-        $this->requireLogin();
+        $modelUser = new ModelUser;
+        $modelUser->requireLogin();
         $delete = new Model_Contact;
         $isDeleted = $delete->deleteContacts($_POST['idLine']);
         $delete->isDeleted($isDeleted);
@@ -60,14 +52,15 @@ class Controller_Contact extends Core_Controller
 
     public function actionAdd()
     {   
-        $this->requireLogin();
+        $modelUser = new ModelUser;
+        $modelUser->requireLogin();
 
         if ($_POST) {
             $inputValues = $this->getInputValues();
             //TODO
         }
 
-        $this->view->generate('View_AddContactForm', 'template', $data=null);
+        $this->view->generate('View_AddContactForm', 'MainStructure', $data=null);
     }
 
     private function getInputValues()

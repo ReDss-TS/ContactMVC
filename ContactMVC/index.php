@@ -7,5 +7,9 @@ error_reporting(E_ALL);
 include_once 'includes/autoloadClasses.php';
 
 //call Router;
-$router = new Core_Router();
-$router->start();
+$router = new CoreRouter();
+try {
+	$router->start();
+} catch (ExceptionErrorPage $e) {
+	$e->pageNotFound();
+}

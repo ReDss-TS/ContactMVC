@@ -1,6 +1,6 @@
 <?php
 
-class Model_Validate extends Core_Model//TODO
+class ModelValidate extends CoreModel//TODO
 {
     protected $validationRules = [
         'user_name' => [

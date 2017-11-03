@@ -1,6 +1,6 @@
 <?php
 
-abstract class View_Helpers_Table
+abstract class ViewHelpersTable
 {
     protected $sortingTag = '&#8593;';
 
