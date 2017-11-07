@@ -5,9 +5,9 @@ class ModelUser extends CoreModel
     public function selectPasswordByLogin($login)
     {
         $dataForEscape['login'] = $login;
-        $escapedData = Includes_DB::getInstance()->escapeData($dataForEscape);
+        $escapedData = CoreDB::getInstance()->escapeData($dataForEscape);
         $selectQuery = "SELECT * FROM users where login = '" . $escapedData['login'] . "'";
-        $resultSelect = Includes_DB::getInstance()->selectFromDB($selectQuery);
+        $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
         return $resultSelect;
     }
 
@@ -16,10 +16,10 @@ class ModelUser extends CoreModel
         $dataForEscape = [];
         $dataForEscape['login'] = $login;
         $dataForEscape['pass'] = $pass;
-        $escapedData = Includes_DB::getInstance()->escapeData($dataForEscape);
+        $escapedData = CoreDB::getInstance()->escapeData($dataForEscape);
 
         $insertUserQuery = "INSERT INTO users (login, pass) VALUES ('" . $escapedData['login'] . "', '" . $escapedData['pass'] . "');";
-        $resultInsert = Includes_DB::getInstance()->insertToDB($insertUserQuery);
+        $resultInsert = CoreDB::getInstance()->insertToDB($insertUserQuery);
         return $resultInsert;
     }
 
@@ -82,16 +82,6 @@ class ModelUser extends CoreModel
     private function createInsertUserQuery($ulogin, $upass)
     {
         return $this->insertUserIntoDB($ulogin, $upass);
-    }
-
-    public function requireLogin()
-    {
-        $signIn = new Model_Sessions;
-        $isSignIn = $signIn->issetLogin();
-        if (!$isSignIn == true) {
-            header("Location: /user/login");
-        }
-        
     }
 
 }

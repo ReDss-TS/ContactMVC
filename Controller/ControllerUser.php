@@ -18,17 +18,16 @@ class ControllerUser extends CoreController
         if ($sessions->issetLogin() == true) {
             header("Location: /contact/index");
         }
-        //generate('class with render form', 'main html file', 'data')
-        $this->view->generate('ViewLoginForm', 'MainStructure', $data=null);
+        return null;
 
     }
 
     private function authentication()
     {
-        $sessions = new Model_Sessions;
+        $sessions = new ModelSessions;
         $arrayData['user_login'] = $_POST['user_login'];
         $arrayData['user_pass'] = $_POST['user_pass'];
-        $authentication = new Model_User();
+        $authentication = new ModelUser();
         $auth = $authentication->authentication($arrayData['user_login'], $arrayData['user_pass']);
         $auth['is_auth'] == true ? $sessions->authenticationToSession($auth['user']['id'], $auth['user']['login']) : $sessions->recordMessageInSession('auth', $auth);
     }
@@ -36,7 +35,7 @@ class ControllerUser extends CoreController
     public function actionRegister()
     {
         $formData = [];
-        $sessions = new Model_Sessions;
+        $sessions = new ModelSessions;
         if ($_POST) {
             $formData['validate'] = $this->registration();
         }
@@ -44,14 +43,13 @@ class ControllerUser extends CoreController
         if ($sessions->issetLogin() == true) {
             header("Location: /contact/index");
         }
-        //generate('class with render form', 'main html file', 'data')
-        $this->view->generate('view_RegisterForm', 'MainStructure', $formData);
+        return $formData;
     }
 
     private function registration()
     {
-        $sessions = new Model_Sessions;
-        $validateObj = new Model_Validate;
+        $sessions = new ModelSessions;
+        $validateObj = new ModelValidate;
         $arrayData['user_login'] = $_POST['user_login'];
         $arrayData['user_pass'] = $_POST['user_pass'];
 
@@ -59,7 +57,7 @@ class ControllerUser extends CoreController
         $noEmptyValidateList = array_diff($validateList, array(''));
 
         if (empty($noEmptyValidateList)) {
-            $registr = new Model_User();
+            $registr = new ModelUser();
             try {
                 $result = $registr->register($arrayData['user_login'], $arrayData['user_pass']);
             } catch (Exception $e) {

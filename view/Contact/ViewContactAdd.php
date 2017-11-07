@@ -1,6 +1,6 @@
 <?php
 
-class ViewAddContactForm extends ViewHelpersForms
+class ViewContactAdd extends ViewHelpersForms
 {
     //elements for html form
     protected $elements  = [

@@ -1,6 +1,6 @@
 <?php
 
-class IncludesDB
+class CoreDB
 {
     public $dbConf;
     public $conn;

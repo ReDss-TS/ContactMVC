@@ -5,7 +5,7 @@ class ModelContact extends CoreModel
     private function getUserID()
     {    
         try {
-            $session = new Model_Sessions;
+            $session = new ModelSessions;
             return $session->getUserID();
         } catch (Exception $e) {
             echo 'Exception: ',  $e->getMessage(), "\n"; //TODO
@@ -22,33 +22,17 @@ class ModelContact extends CoreModel
                                         WHERE contact_list.userId      = $userId
                                         AND contact_list.favoritePhone = contact_phones.phoneType";
 
-        $resultSelect = Includes_DB::getInstance()->selectFromDB($selectQuery);
+        $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
         return $resultSelect;
     }
 
-    public function sanitizeSpecialChars($data)
-    {
-        $filteredResult = [];
-        $keys = [];
-        if (!empty($data)) {
-            foreach ($data as $key => $value) {
-                if (is_array($value)) {
-                    $result = $this->sanitizeSpecialChars($value); 
-                    $filteredResult[$key] = $result;
-                } else {
-                    $filteredResult[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-                }
-            }
-            return $filteredResult;
-        }
-    }
 
     public function deleteContacts($idLine)
     {
         $forEscape['idLine'] = $idLine;
-        $escapedData = Includes_DB::getInstance()->escapeData($forEscape);
+        $escapedData = CoreDB::getInstance()->escapeData($forEscape);
         $userId = $this->getUserID();
-        return Includes_DB::getInstance()->delete("DELETE FROM contact_list WHERE id = '" . $escapedData['idLine'] . "'AND userId = '" . $userId . "'");
+        return CoreDB::getInstance()->delete("DELETE FROM contact_list WHERE id = '" . $escapedData['idLine'] . "'AND userId = '" . $userId . "'");
     }
 
     public function isDeleted($statement)

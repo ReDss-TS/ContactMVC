@@ -1,6 +1,6 @@
 <?php
 
-class ViewRegisterForm extends ViewHelpersForms
+class ViewUserRegister extends ViewHelpersForms
 {
     //elements for html form
     protected $elements  = [

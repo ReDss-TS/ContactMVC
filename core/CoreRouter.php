@@ -22,15 +22,19 @@ class CoreRouter
         $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0]; //TODO maybe that's not right
         $uri[1] = (empty($uri[1])) ? $this->defActionName :$uri[1];
 
-        $controllerName = 'Сontroller' . ucfirst($uri[0]) . '.php';
+        $controllerName = 'Controller' . ucfirst($uri[0]);
         $actionName = 'action' . ucfirst($uri[1]);
+        $viewName = 'View' . ucfirst($uri[0]) . ucfirst($uri[1]);
+
         unset($uri[0], $uri[1]);
         $parametsURI = $uri; //TODO
 
         if (!class_exists($controllerName)) {
             foreach ($this->routes as $uriPattern => $value) {
-                if ($controllerName == $uriPattern) {
-                    $controllerName = 'Сontroller' . ucfirst($value['controller']);
+                if ($uri[0] == $uriPattern) {
+                    $controllerName = 'Controller' . ucfirst($value['controller']);
+                    $actionName = 'action' . ucfirst($value['action']);
+                    $viewName = 'View' . ucfirst($value['controller']) . ucfirst($value['action']);
                 } else {
                     throw new ExceptionErrorPage('ErrorPage');
                 }
@@ -38,17 +42,13 @@ class CoreRouter
         }
 
         if (!method_exists($controllerName, $actionName)) {
-            foreach ($this->routes as $uriPattern => $value) {
-                if ($controllerName == $uriPattern) {
-                    $actionName = 'action' . ucfirst($value['action']);
-                } else {
-                    throw new ExceptionErrorPage('ErrorPage');
-                }
-            }
+            throw new ExceptionErrorPage('ErrorPage');
         }
 
         $controllerObject = new $controllerName;
-        $controllerObject->$actionName($parametsURI);
+        $dataForPage = $controllerObject->$actionName($parametsURI);
+
+        $viewRenderObject = new ViewRender($viewName, $dataForPage);
     }
 
     /**

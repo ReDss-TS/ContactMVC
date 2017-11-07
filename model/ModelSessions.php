@@ -36,9 +36,13 @@ class ModelSessions extends CoreModel
         }
     }
 
+    /**
+     * generate msg for user
+     * @param string $data With a data for render form such as input data, validated data
+     * @return string
+     */
     private function createMsg($data)
     {
-        //should be in the view
         $msg = '';
         foreach ($msgs as $key => $value) {
             if (isset($data['$key'])) {

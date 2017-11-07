@@ -13,9 +13,11 @@
 
         <?php
             $session = new ViewHelpersSessions();
-            $form = new $content($data);
-            echo $session->showMessages();
-            echo $form->render();
+            if (class_exists($view)) { //TODO
+                $content = new $view($data);
+                echo $session->showMessages();
+                echo $content->render();
+            }
         ?>
     
     </body>

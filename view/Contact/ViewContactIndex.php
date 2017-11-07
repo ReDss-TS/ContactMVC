@@ -1,6 +1,6 @@
 <?php
 
-class ViewMainPage extends ViewHelpersTable
+class ViewContactIndex extends ViewHelpersTable
 {
     //table column names
     protected $columnNames = [

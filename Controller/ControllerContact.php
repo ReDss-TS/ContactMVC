@@ -28,18 +28,17 @@ class ControllerContact extends CoreController
     {
         $modelUser = new ModelUser;
         $modelUser->requireLogin();
-        $modelContact = new Model_Contact;
+        $modelContact = new ModelContact;
         $selectedDataForMainPage = $modelContact->selectDataForMainPage();
-        $sanitizeData = $modelContact->sanitizeSpecialChars($selectDataForMainPage);
-        
-        $this->view->generate('ViewMainPage', 'MainStructure', $data=null);
+        $sanitizeData = $modelContact->sanitizeSpecialChars($selectedDataForMainPage);
+        return $sanitizeData;
     }
 
     public function actionDelete()
     {
         $modelUser = new ModelUser;
         $modelUser->requireLogin();
-        $delete = new Model_Contact;
+        $delete = new ModelContact;
         $isDeleted = $delete->deleteContacts($_POST['idLine']);
         $delete->isDeleted($isDeleted);
     }
@@ -57,10 +56,11 @@ class ControllerContact extends CoreController
 
         if ($_POST) {
             $inputValues = $this->getInputValues();
+            $isInserted = $this->insert($inputValues);
             //TODO
         }
 
-        $this->view->generate('View_AddContactForm', 'MainStructure', $data=null);
+        return $sanitizeData;
     }
 
     private function getInputValues()
@@ -74,5 +74,10 @@ class ControllerContact extends CoreController
             }
         }
         return $inputValues;
+    }
+
+    private function insert($inputValues)
+    {
+        //TODO
     }
 }

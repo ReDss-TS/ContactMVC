@@ -20,9 +20,9 @@ abstract class ViewHelpersTable
         // $sortObj = new Sort;
         // $order = $orderObj->getOrder();
         // $sort = $sortObj->changeSortBy();
-
+        $sort = 'ASC';
         foreach ($this->columnNames as $key => $value) {
-            $this->sortingTag = ($key == $order && $sort == 'ASC') ? '&#8593;' : (($key == $order && $sort == 'DESC') ? '&#8595;' : '');
+            //$this->sortingTag = ($key == $order && $sort == 'ASC') ? '&#8593;' : (($key == $order && $sort == 'DESC') ? '&#8595;' : '');
             $tableHeader .= "<th><a class=\"columnNames\" href=\"?order=$key&sort=$sort\">$value $this->sortingTag</a></th>";
         }
         if (isset($this->additionalСolumns)){
