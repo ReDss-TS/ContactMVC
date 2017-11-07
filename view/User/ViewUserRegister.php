@@ -1,13 +1,12 @@
 <?php
 
-class LoginForm extends Forms
+class ViewUserRegister extends ViewHelpersForms
 {
     //elements for html form
     protected $elements  = [
-            'header'     => 'Login',
-            'actionFile' => 'Login',
-            'submitBtn'  => 'Enter',
-            'backBtn'    => 'Register'
+            'header'     => 'Register',
+            'submitBtn'  => 'Register',
+            'backBtn'    => 'user/login'
     ];
 
     //structure of the input field

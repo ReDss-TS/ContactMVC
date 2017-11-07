@@ -1,6 +1,6 @@
 <?php
 
-abstract class Forms
+abstract class ViewHelpersForms
 {
     //array with input data and results of validation and radioButtons;
     protected $data = [];
@@ -19,7 +19,7 @@ abstract class Forms
     {
         $form = "
             <div class = 'editBlock' id = 'editBlock'>
-                <form method = 'post' action=" . $this->elements['actionFile'] . ".php>
+                <form method = 'post' action=''>
                 <div class = 'editBlockHead' id = 'editBlockHead'>
                     <h2>
                         " . $this->elements['header'] . "
@@ -59,10 +59,11 @@ abstract class Forms
     public function submitBtn()
     {
         $submitBtn = $this->elements['submitBtn'];
-        $backBtn = $this->elements['backBtn'];
+        $backLink = $this->elements['backBtn'];
+        $backBtn = explode('/', $backLink);
         $btns = "<br/>
                 <input class = 'button' type = 'submit' name = '" . $submitBtn . "Btn' value = '$submitBtn'/>
-                <a href = '$backBtn.php' class='button'>$backBtn</a>";
+                <a href = '/$backLink' class='button'>$backBtn[1]</a>";
         return $btns;
     }
 

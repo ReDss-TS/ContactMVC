@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'server' => 'localhost',
-    'user'   => 'admin',
-    'passwd' => '7535',
-    'db'     => 'contact_record'
+    'server' => '192.168.100.103',
+    'user'   => 'root',
+    'passwd' => '',
+    'db'     => 'ContactMVC'
 ];
