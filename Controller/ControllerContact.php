@@ -78,6 +78,6 @@ class ControllerContact extends CoreController
 
     private function insert($inputValues)
     {
-        //TODO
+        
     }
 }
