@@ -10,13 +10,8 @@ session_start();
 include_once 'includes/autoloadClasses.php';
 
 $CoreExceptionHandler = new CoreExceptionHandler();
-set_exception_handler([$CoreExceptionHandler, 'handle']); //TODO how should i do it?
+set_exception_handler([$CoreExceptionHandler, 'handle']);
 
 //call Router;
 $router = new CoreRouter();
-//try {
-	
-	$router->start();
-//} catch (ExceptionErrorPage $e) {
-	//$e->createPage();
-//}
+$router->start();
