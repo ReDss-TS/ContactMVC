@@ -2,6 +2,28 @@
 
 class ModelContact extends CoreModel
 {
+    protected $labelsOfContact = [
+        'user_name',
+        'user_surname',
+        'user_mail',
+        'bestPhone',
+        'user_hPhone',
+        'user_wPhone',
+        'user_cPhone',
+        'user_address1',
+        'user_address2',
+        'user_city',
+        'user_state',
+        'user_zip',
+        'user_country',
+        'user_birthday'
+    ];
+
+    public function getLabelsOfContact()
+    {
+        return $this->labelsOfContact;
+    }
+
     private function getUserID()
     {    
         try {
@@ -39,10 +61,10 @@ class ModelContact extends CoreModel
     {
         if ($statement == true) {
             $sessions->recordMessageInSession('delete', $data['deleted'] = false);
-            header("Location: index.php");
         } else {
             $sessions->recordMessageInSession('delete', $data['notDelete'] = false);
         }
+        header("Location: /contact/index");
     }
     
 }

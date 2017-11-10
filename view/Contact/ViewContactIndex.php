@@ -27,8 +27,8 @@ class ViewContactIndex extends ViewHelpersTable
                         <td>" . $value['lastName'] . " </td>
                         <td>" . $value['email'] . " </td>
                         <td>" . $value['phone'] . " </td>
-                        <td>" . $this->createBtn('edit', $value['id']) . " </td>
-                        <td>" . $this->createBtn('delete', $value['id']) . " </td>
+                        <td><a href = '/contact/edit/" . $value['id'] . "' class='button'>edit</a></td>
+                        <td><a href = '/contact/delete/" . $value['id'] . "' class='button'>delete</a></td>
                     </tr> ";
             }
         }

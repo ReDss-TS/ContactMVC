@@ -2,12 +2,11 @@
 
 abstract class CoreController
 {
-	protected $className;
-	protected $view;
-	protected $model;
 
-    protected function __construct()
+    function __construct()
     {
-        $this->view = new CoreView();
+        foreach ($this->components as $key => $property) {
+            $this->{$property} = new $property;
+        }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class ModelValidate extends CoreModel//TODO
+class ModelValidateContact extends ModelPluginValidate
 {
     protected $validationRules = [
         'user_name' => [
@@ -54,35 +54,6 @@ class ModelValidate extends CoreModel//TODO
         'user_birthday' => [
             'notEmpty',
             'isValidBirthday'
-        ],
-        'user_login' => [
-            'notEmpty',
-            'isValidLogin'
-        ],
-        'user_pass' => [
-            'notEmpty',
-            'isValidPass'
         ]
     ];
-
-    public function validateData($data)
-    {
-        $errorList = [];
-        foreach ($this->validationRules as $keyRules => $valueRules) {
-            foreach ($valueRules as $k => $rule) {
-                if (isset($data[$keyRules])) {
-                    $response = $this->$rule($data[$keyRules]);
-                    $errorList[$keyRules] = $response;
-                    if ($response != '') {
-                        break;
-                    }
-                }
-            }
-        }
-        return $errorList;
-    }
-    
-    //TODO
-    //below will be validate functions... 
-    //But how to organize??
 }

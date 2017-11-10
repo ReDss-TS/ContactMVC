@@ -77,6 +77,7 @@ class CoreRouter
         $names['view']       = 'View' . ucfirst($uri[0]) . ucfirst($uri[1]);
 
         unset($uri[0], $uri[1]);
+        sort($uri);
         $names['parametersURI'] = (!empty($uri)) ? $uri : '';
 
         return $names;
@@ -88,11 +89,11 @@ class CoreRouter
      */
     private function callComponents($names)
     {
+        $action = $names['action'];
         if (class_exists($names['controller'])) {
             if (method_exists($names['controller'], $names['action'])) {
                 $controllerObject = new $names['controller'];
-                $dataForPage = $controllerObject->$names['action']($names['parametersURI']);
-
+                $dataForPage = $controllerObject->$action($names['parametersURI']);
                 $viewRenderObject = new ViewRender($names['view'], $dataForPage);
             } else {
                 throw new ExceptionErrorPage();
