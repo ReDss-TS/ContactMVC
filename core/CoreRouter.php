@@ -93,6 +93,7 @@ class CoreRouter
         if (class_exists($names['controller'])) {
             if (method_exists($names['controller'], $names['action'])) {
                 $controllerObject = new $names['controller'];
+                $controllerObject->beforeFilter($action, $names['parametersURI']);
                 $dataForPage = $controllerObject->$action($names['parametersURI']);
                 $viewRenderObject = new ViewRender($names['view'], $dataForPage);
             } else {

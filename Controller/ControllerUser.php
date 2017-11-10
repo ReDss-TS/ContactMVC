@@ -3,6 +3,7 @@
 class ControllerUser extends CoreController
 {
     protected $components = ['ModelSessions', 'ModelUser', 'ModelValidateUser'];
+    protected $actionsRequireLogin = [];
 
     public function actionLogin()
     {

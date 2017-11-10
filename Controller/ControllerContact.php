@@ -7,14 +7,12 @@ class ControllerContact extends CoreController
 
     public function actionIndex()
     {   
-        $this->ModelUser->requireLogin();
         $selectedData = $this->ModelContact->selectDataForMainPage();
         return $selectedData;
     }
 
     public function actionDelete($param) //TODO how I must validated $param
     {   
-        $this->ModelUser->requireLogin();
         if (isset($param)) {
             $isDeleted = $this->ModelContact->deleteContacts($param);
             $this->ModelContact->isDeleted($isDeleted);
@@ -25,8 +23,6 @@ class ControllerContact extends CoreController
 
     public function actionAdd()
     {   
-        $this->ModelUser->requireLogin();
-
         if ($_POST) {
             $inputValues = $this->getInputValues();
             $isInserted = $this->insert($inputValues);
