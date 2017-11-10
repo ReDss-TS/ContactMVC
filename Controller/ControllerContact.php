@@ -2,58 +2,27 @@
 
 class ControllerContact extends CoreController
 {   
-    public $labelsOfContact = [
-        'user_name',
-        'user_surname',
-        'user_mail',
-        'bestPhone',
-        'user_hPhone',
-        'user_wPhone',
-        'user_cPhone',
-        'user_address1',
-        'user_address2',
-        'user_city',
-        'user_state',
-        'user_zip',
-        'user_country',
-        'user_birthday'
-    ];
-
-    function __construct()
-    {
-       parent::__construct();
-    }
+    protected $components = ['ModelUser', 'ModelContact'];
+    protected $actionsRequireLogin = ['Index', 'Delete', 'Add'];
 
     public function actionIndex()
-    {
-        $modelUser = new ModelUser;
-        $modelUser->requireLogin();
-        $modelContact = new ModelContact;
-        $selectedDataForMainPage = $modelContact->selectDataForMainPage();
-        $sanitizeData = $modelContact->sanitizeSpecialChars($selectedDataForMainPage);
-        return $sanitizeData;
+    {   
+        $selectedData = $this->ModelContact->selectDataForMainPage();
+        return $selectedData;
     }
 
-    public function actionDelete()
-    {
-        $modelUser = new ModelUser;
-        $modelUser->requireLogin();
-        $delete = new ModelContact;
-        $isDeleted = $delete->deleteContacts($_POST['idLine']);
-        $delete->isDeleted($isDeleted);
-    }
-
-    public function actionLogout()
-    {
-        session_destroy();
-        header("Location: index.php");
+    public function actionDelete($param) //TODO how I must validated $param
+    {   
+        if (isset($param)) {
+            $isDeleted = $this->ModelContact->deleteContacts($param);
+            $this->ModelContact->isDeleted($isDeleted);
+        } else {
+            throw new CoreExceptionHandler();
+        }
     }
 
     public function actionAdd()
     {   
-        $modelUser = new ModelUser;
-        $modelUser->requireLogin();
-
         if ($_POST) {
             $inputValues = $this->getInputValues();
             $isInserted = $this->insert($inputValues);
@@ -65,8 +34,9 @@ class ControllerContact extends CoreController
 
     private function getInputValues()
     {
+        $labelsOfContact = $this->ModelContact->getLabelsOfContact();
         $inputValues = [];
-        foreach ($this->labelsOfContact as $key => $value) {
+        foreach ($labelsOfContact as $key => $value) {
             if (isset($_POST[$value])) {
                 $inputValues[] = $_POST[$value];
             } else {
@@ -78,6 +48,6 @@ class ControllerContact extends CoreController
 
     private function insert($inputValues)
     {
-        //TODO
+        
     }
 }

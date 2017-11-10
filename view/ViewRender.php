@@ -8,6 +8,24 @@ class ViewRender
      * @param string $data With a data for render form such as input data, validated data
      */
     function __construct($view, $data) {
+    	$data = $this->sanitizeSpecialChars($data);
         include "view/ViewMainStructure.php";
+    }
+
+    protected function sanitizeSpecialChars($data)
+    {
+        $filteredResult = [];
+        $keys = [];
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                if (is_array($value)) {
+                    $result = $this->sanitizeSpecialChars($value); 
+                    $filteredResult[$key] = $result;
+                } else {
+                    $filteredResult[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                }
+            }
+            return $filteredResult;
+        }
     }
 }

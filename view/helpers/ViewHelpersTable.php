@@ -54,7 +54,7 @@ abstract class ViewHelpersTable
 
     public function createBtn($typeBtn, $idLine)
     {
-        $btn = "<form method = \"post\" action = " . $this->additionalСolumns[$typeBtn] . ".php>
+        $btn = "<form method = \"post\" action = ''>
             <input type= \"hidden\" name = \"idLine\" value = " . $idLine . " />
             <input class = " . $typeBtn . " Btn type=\"submit\" name = " . $typeBtn . " Btn value = " . $typeBtn . " />
             </form>";

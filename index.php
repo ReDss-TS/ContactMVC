@@ -9,13 +9,9 @@ session_start();
 //session_destroy();
 include_once 'includes/autoloadClasses.php';
 
+$CoreExceptionHandler = new CoreExceptionHandler();
+set_exception_handler([$CoreExceptionHandler, 'handle']);
+
 //call Router;
 $router = new CoreRouter();
-try {
-	//set_exception_handler('pageNotFound'); //TODO how should i do it?
-	$router->start();
-} catch (ExceptionErrorPage $e) {
-	$e->createPage();
-}
-
-
+$router->start();

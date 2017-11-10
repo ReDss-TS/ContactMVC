@@ -44,10 +44,10 @@ class ModelSessions extends CoreModel
     private function createMsg($data)
     {
         $msg = '';
-        foreach ($msgs as $key => $value) {
-            if (isset($data['$key'])) {
-                if ($data['$key'] == true) {
-                   $msg = $value;
+        foreach ($this->msgs as $key => $value) {
+            if (isset($data[$key])) {
+                if ($data[$key] == true) {
+                   $msg .= $value;
                 }
             }
         }
@@ -63,9 +63,6 @@ class ModelSessions extends CoreModel
     {   
         if (isset($_SESSION['userId'])) {
             return $_SESSION['userId'];
-        } else {
-            throw new Exception('userId does not exist');
         }
-
     }
 }

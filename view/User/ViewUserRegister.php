@@ -6,7 +6,7 @@ class ViewUserRegister extends ViewHelpersForms
     protected $elements  = [
             'header'     => 'Register',
             'submitBtn'  => 'Register',
-            'backBtn'    => 'user/login'
+            'backBtn'    => 'user/Login'
     ];
 
     //structure of the input field

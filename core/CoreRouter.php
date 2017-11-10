@@ -18,37 +18,17 @@ class CoreRouter
     {
         $uri = $this->getURI();
         $uri = explode('/', rtrim(filter_var($uri, FILTER_SANITIZE_URL), '/'));
-
         $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0]; //TODO maybe that's not right
-        $uri[1] = (empty($uri[1])) ? $this->defActionName :$uri[1];
+        $uri[1] = (empty($uri[1])) ? $this->defActionName : $uri[1];
 
-        $controllerName = 'Controller' . ucfirst($uri[0]);
-        $actionName = 'action' . ucfirst($uri[1]);
-        $viewName = 'View' . ucfirst($uri[0]) . ucfirst($uri[1]);
+        $componentsNames = $this->checkRoutes($uri[0]);
+        $componentsNames = ($componentsNames == false) ? $this->getNames($uri) : $componentsNames;
 
-        unset($uri[0], $uri[1]);
-        $parametsURI = $uri; //TODO
-
-        if (!class_exists($controllerName)) {
-            foreach ($this->routes as $uriPattern => $value) {
-                if ($uri[0] == $uriPattern) {
-                    $controllerName = 'Controller' . ucfirst($value['controller']);
-                    $actionName = 'action' . ucfirst($value['action']);
-                    $viewName = 'View' . ucfirst($value['controller']) . ucfirst($value['action']);
-                } else {
-                    throw new ExceptionErrorPage('ErrorPage');
-                }
-            }
-        }
-
-        if (!method_exists($controllerName, $actionName)) {
-            throw new ExceptionErrorPage('ErrorPage');
-        }
-
-        $controllerObject = new $controllerName;
-        $dataForPage = $controllerObject->$actionName($parametsURI);
-
-        $viewRenderObject = new ViewRender($viewName, $dataForPage);
+        try {
+            $this->callComponents($componentsNames);
+        } catch (ExceptionErrorPage $e) {
+            $e->createErrorPage('404');
+        }    
     }
 
     /**
@@ -61,6 +41,67 @@ class CoreRouter
             return trim($_SERVER['REQUEST_URI'], '/');
         }
         return null;
+    }
+
+    /**
+     * Find out names of controller, action and view in routes file
+     * @param array $uri With uri
+     * @return array or false;
+     */
+    private function checkRoutes($uri)
+    {
+        $names = [];
+        foreach ($this->routes as $uriPattern => $value) {
+            if ($uri == $uriPattern) {
+                $names['controller'] = 'Controller' . ucfirst($value['controller']);
+                $names['action']     = 'action' . ucfirst($value['action']);
+                $names['view']       = 'View' . ucfirst($value['controller']) . ucfirst($value['action']);
+                $names['parametersURI'] = '';
+            } else {
+                return false;
+            }
+        }
+        return $names;
+    }
+
+    /**
+     * Find out names of controller, action and view in user uri
+     * @param array $uri With uri
+     * @return array
+     */
+    private function getNames($uri)
+    {
+        $names = [];
+        $names['controller'] = 'Controller' . ucfirst($uri[0]);
+        $names['action']     = 'action' . ucfirst($uri[1]);
+        $names['view']       = 'View' . ucfirst($uri[0]) . ucfirst($uri[1]);
+
+        unset($uri[0], $uri[1]);
+        sort($uri);
+        $names['parametersURI'] = (!empty($uri)) ? $uri : '';
+
+        return $names;
+    }
+
+    /**
+     * Call controller action
+     * @param array $names With names of controller, action and view
+     */
+    private function callComponents($names)
+    {
+        $action = $names['action'];
+        if (class_exists($names['controller'])) {
+            if (method_exists($names['controller'], $names['action'])) {
+                $controllerObject = new $names['controller'];
+                $controllerObject->beforeFilter($action, $names['parametersURI']);
+                $dataForPage = $controllerObject->$action($names['parametersURI']);
+                $viewRenderObject = new ViewRender($names['view'], $dataForPage);
+            } else {
+                throw new ExceptionErrorPage();
+            }
+        } else {
+            throw new ExceptionErrorPage();
+        }
     }
 
 }
