@@ -2,7 +2,8 @@
 
 class ControllerUser extends CoreController
 {
-    protected $components = ['ModelSessions', 'ModelUser', 'ModelValidateUser'];
+    protected $models = ['ModelSessions', 'ModelUser', 'ModelValidateUser'];
+    protected $components = ['Auth'];
     protected $actionsRequireLogin = [];
 
     public function actionLogin()
@@ -18,9 +19,7 @@ class ControllerUser extends CoreController
 
     private function authentication()
     {
-        $arrayData['user_login'] = $_POST['user_login'];
-        $arrayData['user_pass'] = $_POST['user_pass'];
-        $auth = $this->ModelUser->authentication($arrayData['user_login'], $arrayData['user_pass']);
+        $auth = $this->Auth->isAuth($_POST['user_login'], $_POST['user_pass']);
         $auth['is_auth'] == true ? $this->ModelSessions->authenticationToSession($auth['user']['id'], $auth['user']['login']) : $this->ModelSessions->recordMessageInSession('auth', $auth);
     }
 

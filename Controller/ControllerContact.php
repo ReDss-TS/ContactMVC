@@ -2,7 +2,8 @@
 
 class ControllerContact extends CoreController
 {   
-    protected $components = ['ModelUser', 'ModelContact'];
+    protected $models = ['ModelUser', 'ModelContact'];
+    protected $components = ['Auth'];
     protected $actionsRequireLogin = ['Index', 'Delete', 'Add'];
 
     public function actionIndex()
@@ -11,7 +12,7 @@ class ControllerContact extends CoreController
         return $selectedData;
     }
 
-    public function actionDelete($param) //TODO how I must validated $param
+    public function actionDelete($param) //TODO
     {   
         if (isset($param)) {
             $isDeleted = $this->ModelContact->deleteContacts($param);
