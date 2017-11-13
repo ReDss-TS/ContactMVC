@@ -2,6 +2,8 @@
 
 class ModelContact extends CoreModel
 {
+    protected $components = ['Validate'];
+
     protected $labelsOfContact = [
         'user_name',
         'user_surname',
@@ -59,12 +61,73 @@ class ModelContact extends CoreModel
 
     public function isDeleted($statement)
     {
-        if ($statement == true) {
-            $sessions->recordMessageInSession('delete', $data['deleted'] = false);
+        $session = new ModelSessions;
+        if ($statement === true) {
+            $msg['deleted'] = true;
+            $session->recordMessageInSession('delete', $msg);
         } else {
-            $sessions->recordMessageInSession('delete', $data['notDelete'] = false);
+            $msg['notDelete'] = true;
+            $session->recordMessageInSession('delete', $msg);
         }
         header("Location: /contact/index");
     }
+
+    public function insertDataToContactList($data)
+    {
+        $data = CoreDB::getInstance()->escapeData($data);
+        $insertQuery = "INSERT INTO contact_list (userId, firstName, lastName, email, favoritePhone) VALUES (
+            '" . $data['userId'] . "',
+            '" . $data['user_name'] . "',
+            '" . $data['user_surname'] . "',
+            '" . $data['user_mail'] . "',
+            '" . $data['bestPhone'] . "'
+        )";
+        $resultInsert = CoreDB::getInstance()->insertToDB($insertQuery);
+        $lastContactID = CoreDB::getInstance()->getLastID($resultInsert);
+        return $lastContactID;
+    }
     
+    public function insertDataToContactPhones($contactID, $data)
+    {
+        $data = CoreDB::getInstance()->escapeData($data);
+        foreach ($data as $key => $value) {
+            $insertQuery = "INSERT INTO contact_phones (contactId, phone, phoneType) VALUES (
+                '" . $contactID . "',
+                '" . $value . "',
+                '" . $key . "'
+            )";
+            $resultInsert = CoreDB::getInstance()->insertToDB($insertQuery);
+        }
+        return $resultInsert;
+    }
+
+    public function insertDataToContactAddress($contactID, $data)
+    {
+        $data = CoreDB::getInstance()->escapeData($data);
+        $insertQuery = "INSERT INTO contact_address (contactId, address1, address2, city, state, zip, country, birthday) VALUES (
+            '" . $contactID . "',
+            '" . $data['user_address1'] . "',
+            '" . $data['user_address2'] . "',
+            '" . $data['user_city'] . "',
+            '" . $data['user_state'] . "',
+            '" . $data['user_zip'] . "',
+            '" . $data['user_country'] . "',
+            '" . $data['user_birthday'] . "'
+        )";
+        $resultInsert = CoreDB::getInstance()->insertToDB($insertQuery);
+        return $resultInsert;
+    }
+
+    public function isInserted($statement)
+    {
+        $session = new ModelSessions;
+        if ($statement === true) {
+            $msg['add'] = true;
+            $session->recordMessageInSession('insert', $msg);
+            header("Location: /contact/index");
+        } else {
+            $msg['notAdd'] = true;
+            $session->recordMessageInSession('insert', $msg);
+        }
+    }
 }

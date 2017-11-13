@@ -3,7 +3,7 @@
 class ControllerUser extends CoreController
 {
     protected $models = ['ModelSessions', 'ModelUser', 'ModelValidateUser'];
-    protected $components = ['Auth'];
+    protected $components = ['Auth', 'Register'];
     protected $actionsRequireLogin = [];
 
     public function actionLogin()
@@ -15,12 +15,6 @@ class ControllerUser extends CoreController
             header("Location: /contact/index");
         }
         return null;
-    }
-
-    private function authentication()
-    {
-        $auth = $this->Auth->isAuth($_POST['user_login'], $_POST['user_pass']);
-        $auth['is_auth'] == true ? $this->ModelSessions->authenticationToSession($auth['user']['id'], $auth['user']['login']) : $this->ModelSessions->recordMessageInSession('auth', $auth);
     }
 
     public function actionRegister()
@@ -36,30 +30,36 @@ class ControllerUser extends CoreController
         return $formData;
     }
 
+    public function actionLogout()
+    {
+        session_destroy();
+        header("Location: /user/login");
+    }
+
+    private function authentication()
+    {
+        $auth = $this->Auth->auth($_POST['user_login'], $_POST['user_pass']);
+        $auth['is_auth'] == true ? $this->ModelSessions->authenticationToSession($auth['user']['id'], $auth['user']['login']) : $this->ModelSessions->recordMessageInSession('auth', $auth);
+    }
+
     private function registration()
     {
         $arrayData['user_login'] = $_POST['user_login'];
         $arrayData['user_pass'] = $_POST['user_pass'];
-
+        
         $validateList = $this->ModelValidateUser->validateData($arrayData);
         $noEmptyValidateList = array_diff($validateList, array(''));
 
         if (empty($noEmptyValidateList)) {
             try {
-                $result = $this->ModelUser->register($arrayData['user_login'], $arrayData['user_pass']);
+                $result = $this->Register->register($arrayData['user_login'], $arrayData['user_pass']);
+                $this->ModelSessions->recordMessageInSession('register', $result);
+                return '';
             } catch (Exception $e) {
                 echo 'Exception: ',  $e->getMessage(), "\n";//TODO
             }
-            $this->ModelSessions->recordMessageInSession('register', $result);
-            return '';
         } else {
             return $validateList;
         }
-    }
-
-    public function actionLogout()
-    {
-        session_destroy();
-        header("Location: /user/login");
     }
 }

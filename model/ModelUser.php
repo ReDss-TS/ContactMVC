@@ -2,6 +2,8 @@
 
 class ModelUser extends CoreModel
 {
+    protected $components = ['Validate'];
+    
     public function selectPasswordByLogin($login)
     {
         $dataForEscape['login'] = $login;
@@ -22,33 +24,4 @@ class ModelUser extends CoreModel
         $resultInsert = CoreDB::getInstance()->insertToDB($insertUserQuery);
         return $resultInsert;
     }
-
-    public function register($ulogin, $upass) //TODO
-    {   
-        $msg = [];
-        $upass = md5(trim($upass));
-        $selectedLogin = $this->createSelectLoginQuery($ulogin);
-        if (is_array($selectedLogin)) {
-            $msg['busyLogin'] = true;
-        } else {
-            $insertedUser = $this->createInsertUserQuery($ulogin, $upass);
-            if ($insertedUser === true) {
-                $msg['registered'] = true;
-            } else {
-                throw new Exception('Error: User data not included');
-            }           
-        }
-        return $msg;
-    }
-
-    private function createSelectLoginQuery($ulogin)
-    {
-        return $this->selectPasswordByLogin($ulogin);
-    }
-
-    private function createInsertUserQuery($ulogin, $upass)
-    {
-        return $this->insertUserIntoDB($ulogin, $upass);
-    }
-
 }

@@ -2,8 +2,8 @@
 
 class ControllerContact extends CoreController
 {   
-    protected $models = ['ModelUser', 'ModelContact'];
-    protected $components = ['Auth'];
+    protected $models = ['ModelSessions', 'ModelContact', 'ModelValidateContact'];
+    protected $components = ['Auth', 'Values', 'Phones'];
     protected $actionsRequireLogin = ['Index', 'Delete', 'Add'];
 
     public function actionIndex()
@@ -12,10 +12,10 @@ class ControllerContact extends CoreController
         return $selectedData;
     }
 
-    public function actionDelete($param) //TODO
+    public function actionDelete($param)
     {   
         if (isset($param)) {
-            $isDeleted = $this->ModelContact->deleteContacts($param);
+            $isDeleted = $this->ModelContact->deleteContacts($param[0]);
             $this->ModelContact->isDeleted($isDeleted);
         } else {
             throw new CoreExceptionHandler();
@@ -23,14 +23,35 @@ class ControllerContact extends CoreController
     }
 
     public function actionAdd()
-    {   
-        if ($_POST) {
-            $inputValues = $this->getInputValues();
-            $isInserted = $this->insert($inputValues);
-            //TODO
+    {  
+        $data = [];
+        if ($_POST) {    
+           $data = $this->addRecord();
+        }
+        return $data;
+    }
+
+    private function addRecord()
+    {
+        $formData = [];
+        $results = false;
+        $inputValues = $this->getInputValues();
+        $inputValues = $this->Values->addKeyToInputValues($inputValues);
+
+        $validateList = $this->ModelValidateContact->validateData($inputValues);
+        $noEmptyValidateList = array_diff($validateList, array(''));
+        $data = $this->Values->additionalFields($inputValues);
+
+        if (empty($noEmptyValidateList)) {
+            $results = $this->insertData($data);
+        } else {
+            $formData['data'] = $data;
+            $formData['validate'] = $validateList;
+            $formData['radio'] = $data['bestPhone'];
         }
 
-        return $sanitizeData;
+        $this->ModelContact->isInserted($results);
+        return $formData;
     }
 
     private function getInputValues()
@@ -47,8 +68,17 @@ class ControllerContact extends CoreController
         return $inputValues;
     }
 
-    private function insert($inputValues)
+    private function insertData($data)
     {
-        
+        $results = [];
+        $phones = $this->Phones->getPhones($data['user_hPhone'], $data['user_wPhone'], $data['user_cPhone']);
+
+        $results['idContact'] = $this->ModelContact->insertDataToContactList($data);
+        $results['phones'] = $this->ModelContact->insertDataToContactPhones($results['idContact'], $phones);
+        $results['address'] = $this->ModelContact->insertDataToContactAddress($results['idContact'], $data);
+        $isInserted = $this->Values->isInserted($results);
+        return $isInserted;
     }
+
+
 }

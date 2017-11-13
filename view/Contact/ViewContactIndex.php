@@ -1,7 +1,9 @@
 <?php
 
-class ViewContactIndex extends ViewHelpersTable
+class ViewContactIndex extends CoreView
 {
+    //what render (form or table or both)
+    protected $thatRender = ['table'];
     //table column names
     protected $columnNames = [
         'firstName' => 'First Name',

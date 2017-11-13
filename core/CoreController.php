@@ -19,7 +19,7 @@ abstract class CoreController
     {
     	foreach ($this->actionsRequireLogin as $key => $value) {
     		if ('action' . $value === $action) {
-    			$this->ModelUser->requireLogin();
+    			$this->Auth->isAuth();
     		}
     	}
     }

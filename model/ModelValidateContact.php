@@ -1,7 +1,9 @@
 <?php
 
-class ModelValidateContact extends ModelPluginValidate
+class ModelValidateContact extends CoreModel
 {
+    protected $components = ['Validate'];
+    
     protected $validationRules = [
         'user_name' => [
             'notEmpty',

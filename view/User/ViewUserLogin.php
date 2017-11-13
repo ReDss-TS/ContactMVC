@@ -1,7 +1,10 @@
 <?php
 
-class ViewUserLogin extends ViewHelpersForms
+class ViewUserLogin extends CoreView
 {
+    //what render (form or table or both)
+    protected $thatRender = ['form'];
+    
     //elements for html form
     protected $elements  = [
             'header'     => 'Login',

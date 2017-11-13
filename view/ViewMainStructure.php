@@ -16,7 +16,7 @@
             if (class_exists($view)) { //TODO
                 $content = new $view($data);
                 echo $session->showMessages();
-                echo $content->render();
+                echo $content->render($data);
             }
         ?>
     

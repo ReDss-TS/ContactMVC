@@ -1,6 +1,6 @@
 <?php
 
-abstract class ViewHelpersForms
+class ViewHelpersForms
 {
     //array with input data and results of validation and radioButtons;
     protected $data = [];
@@ -15,14 +15,14 @@ abstract class ViewHelpersForms
         $this->data = $formData;       
     }
 
-    public function startForm()
+    public function startForm($elements)
     {
         $form = "
             <div class = 'editBlock' id = 'editBlock'>
                 <form method = 'post' action=''>
                 <div class = 'editBlockHead' id = 'editBlockHead'>
                     <h2>
-                        " . $this->elements['header'] . "
+                        " . $elements['header'] . "
                     </h2>
                 </div>";
         return $form;
@@ -56,10 +56,10 @@ abstract class ViewHelpersForms
         return $input;
     }
 
-    public function submitBtn()
+    public function submitBtn($elements)
     {
-        $submitBtn = $this->elements['submitBtn'];
-        $backLink = $this->elements['backBtn'];
+        $submitBtn = $elements['submitBtn'];
+        $backLink = $elements['backBtn'];
         $backBtn = explode('/', $backLink);
         $btns = "<br/>
                 <input class = 'button' type = 'submit' name = '" . $submitBtn . "Btn' value = '$submitBtn'/>
@@ -67,14 +67,14 @@ abstract class ViewHelpersForms
         return $btns;
     }
 
-    public function render()
+    public function render($structure, $elements)
     {
         $html = '';
-        $html .= $this->startForm();
-        foreach($this->structure as $field){
+        $html .= $this->startForm($elements);
+        foreach($structure as $field){
             $html .= $this->renderInput($field['name'], $field['label'], $field['type']);
         }
-        $html .= $this->submitBtn();
+        $html .= $this->submitBtn($elements);
         $html .= $this->endForm();
         return $html;
     }

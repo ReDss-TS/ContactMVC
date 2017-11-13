@@ -1,7 +1,9 @@
 <?php
 
-class ViewContactAdd extends ViewHelpersForms
+class ViewContactAdd extends CoreView
 {
+    //what render (form or table or both)
+    protected $thatRender = ['form'];
     //elements for html form
     protected $elements  = [
             'header'     => 'Add Contact',
