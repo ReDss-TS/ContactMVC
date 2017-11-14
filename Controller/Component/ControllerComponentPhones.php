@@ -2,10 +2,10 @@
 
 class ControllerComponentPhones
 {    
-    protected $phonesKey = [
-        '1' => 'hPhone',
-        '2' => 'wPhone',
-        '3' => 'cPhone',
+    protected $typesOfPhone = [
+        '0' => 'hPhone', //home Phone
+        '1' => 'wPhone', //work Phone
+        '2' => 'cPhone' //cell Phone
     ];
     
     public function choiceBestPhone($bestPhone, $hPhone, $wPhone, $cPhone)
@@ -34,15 +34,16 @@ class ControllerComponentPhones
         return $phones;
     }
 
-    // public function getPhones($data)
-    // {
-    //     $phones = [];
-    //     foreach ($data as $k => $val) {
-    //         foreach ($this->phonesKey as $key => $value) {
-    //             if ($k == 'user_' . $value) {
-    //                 $phones[$key] = $val;
-    //             }
-    //     }
-    //     return $phones;
-    // }
+    public function sortPhonesByType($selectedPhones)
+    {
+        $phones = [];
+        foreach ($selectedPhones as $key => $value) {
+            foreach ($this->typesOfPhone as $k => $val) {
+                if ($key == $k) {
+                    $phones[$val] = $value['phone'];
+                }
+            }
+        }
+        return $phones;
+    }
 }

@@ -44,7 +44,8 @@ class ViewHelpersForms
                 $parameters[$value] = (isset($this->data[$value])) ? $this->data[$value] : '';
             }
         }
-        $radioBtn = (method_exists(get_class($this), 'renderRadioBtn')) ? $this->renderRadioBtn($name, $parameters['radio']) : '';
+
+        $radioBtn = (method_exists(get_class($this), 'renderRadioBtn')) ? $this->renderRadioBtn($name, $parameters['radio']) : '';//TODO
 
         $input = "<div class = \"field\">
                     <label for ='$name'>$label:</label>

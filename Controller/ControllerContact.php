@@ -31,6 +31,19 @@ class ControllerContact extends CoreController
         return $data;
     }
 
+    public function actionEdit($param)
+    {  
+        $inputValues = $this->Values->getValuesForUpdate($param[0]);
+        $formData['data'] = $inputValues['data'];
+        $formData['validate'] = '';
+        $formData['radio'] = $inputValues['selectedRadio'];
+        
+        if ($_POST) {    
+           $formData = $this->editRecord($param[0]);
+        }
+        return $formData;
+    }
+
     private function addRecord()
     {
         $formData = [];
@@ -51,6 +64,29 @@ class ControllerContact extends CoreController
         }
 
         $this->ModelContact->isInserted($results);
+        return $formData;
+    }
+
+    private function editRecord($param)
+    {
+        $formData = []; //TODO
+        $results = false;
+        $inputValues = $this->getInputValues();
+        $inputValues = $this->Values->addKeyToInputValues($inputValues);
+
+        $validateList = $this->ModelValidateContact->validateData($inputValues);
+        $noEmptyValidateList = array_diff($validateList, array(''));
+        $data = $this->Values->additionalFields($inputValues);
+
+        if (empty($noEmptyValidateList)) {
+            $results = $this->updateData($data, $param);
+        } else {
+            $formData['data'] = $data;
+            $formData['validate'] = $validateList;
+            $formData['radio'] = $data['bestPhone'];
+        }
+
+        $this->ModelContact->isUpdated($results);
         return $formData;
     }
 
@@ -76,9 +112,20 @@ class ControllerContact extends CoreController
         $results['idContact'] = $this->ModelContact->insertDataToContactList($data);
         $results['phones'] = $this->ModelContact->insertDataToContactPhones($results['idContact'], $phones);
         $results['address'] = $this->ModelContact->insertDataToContactAddress($results['idContact'], $data);
-        $isInserted = $this->Values->isInserted($results);
+        $isInserted = $this->Values->isDone($results);
         return $isInserted;
     }
 
+    private function updateData($data, $recordID)
+    {
+        $results = [];
+        $phones = $this->Phones->getPhones($data['user_hPhone'], $data['user_wPhone'], $data['user_cPhone']);
+
+        $results['idContact'] = $this->ModelContact->updateDataInContactList($recordID, $data);
+        $results['phones'] = $this->ModelContact->updateDataToContactPhones($recordID, $phones);
+        $results['address'] = $this->ModelContact->updateDataToContactAddress($recordID, $data);
+        $isInserted = $this->Values->isDone($results);
+        return $isInserted;
+    }
 
 }

@@ -12,7 +12,9 @@ class ModelSessions extends CoreModel
         'busyLogin'  => 'Login is busy! Please enter another login',
         'registered' => 'You have successfully registered',
         'add'        => 'New record created successfully',
-        'notAdd'     => 'New record not created'
+        'notAdd'     => 'New record not created',
+        'updated'    => 'Record update successfully',
+        'notUpdated' => 'New record not updated'
     ];
 
     public function issetLogin() 

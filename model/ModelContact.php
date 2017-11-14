@@ -130,4 +130,106 @@ class ModelContact extends CoreModel
             $session->recordMessageInSession('insert', $msg);
         }
     }
+
+    public function selectAllData($idLine)
+    {
+        $forEscape['idLine'] = $idLine;
+        $escapedData = CoreDB::getInstance()->escapeData($forEscape);
+
+        $userId = $this->getUserID();
+        $selectQuery = "SELECT contact_list.id, contact_list.firstName, contact_list.lastName, contact_list.email, contact_list.favoritePhone, contact_address.address1, contact_address.address2, contact_address.city, contact_address.state, contact_address.zip, contact_address.country, contact_address.birthday 
+                FROM contact_list 
+                    INNER JOIN contact_address 
+                        ON contact_list.id = contact_address.contactId
+                            WHERE contact_list.userId = '" . $userId . "' AND contact_list.id = '" . $escapedData['idLine'] . "'";
+
+        $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
+        return $resultSelect;
+    }
+
+    public function selectPhones($idLine)
+    {
+        $forEscape['idLine'] = $idLine;
+        $escapedData = CoreDB::getInstance()->escapeData($forEscape);
+        
+        $userId = $this->getUserID();
+        $selectQuery = "SELECT contact_phones.phone, contact_phones.phoneType 
+                            FROM contact_phones 
+                                WHERE contact_phones.contactId = '" . $escapedData['idLine'] . "'";
+
+        $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
+        return $resultSelect;
+    }
+
+    public function updateDataInContactList($idContact, $data)
+    {
+        $forEscape['idLine'] = $idContact;
+        $idContact = CoreDB::getInstance()->escapeData($forEscape);
+        $data = CoreDB::getInstance()->escapeData($data);
+
+        $userId = $this->getUserID();
+        $updateQuery = "UPDATE contact_list 
+            SET firstName     = '" . $data['user_name'] . "',
+                lastName      = '" . $data['user_surname'] . "',
+                email         = '" . $data['user_mail'] . "',
+                favoritePhone = '" . $data['bestPhone'] . "' 
+                    WHERE contact_list.id   = '" . $idContact['idLine'] . "' 
+                        AND contact_list.userId = '" . $userId . "'";
+
+        $resultUpdate = CoreDB::getInstance()->updateDB($updateQuery);
+        return $resultUpdate;
+    }
+
+    public function updateDataToContactPhones($idContact, $data)
+    {
+        $forEscape['idLine'] = $idContact;
+        $idContact = CoreDB::getInstance()->escapeData($forEscape);
+        $data = CoreDB::getInstance()->escapeData($data);
+
+        foreach ($data as $key => $value) {
+            $updateQuery = "INSERT INTO contact_phones (contactId, phone, phoneType) VALUES (
+                '" . $idContact['idLine'] . "',
+                '" . $value . "',
+                '" . $key . "'
+                ) ON DUPLICATE KEY UPDATE phone = '" . $value . "'";
+
+            $resultUpdate = CoreDB::getInstance()->updateDB($updateQuery);
+        }
+        return $resultUpdate;
+    }
+
+    public function updateDataToContactAddress($idContact, $data)
+    {
+        $forEscape['idLine'] = $idContact;
+        $idContact = CoreDB::getInstance()->escapeData($forEscape);
+        $data = CoreDB::getInstance()->escapeData($data);
+
+        $userId = $this->getUserID();
+        $updateQuery = "UPDATE contact_address, contact_list 
+            SET address1 = '" . $data['user_address1'] . "',
+                address2 = '" . $data['user_address2'] . "',
+                city     = '" . $data['user_city'] . "',
+                state    = '" . $data['user_state'] . "',
+                zip      = '" . $data['user_zip'] . "',
+                country  = '" . $data['user_country'] . "',
+                birthday = '" . $data['user_birthday'] . "' 
+                    WHERE contact_address.contactId = '" . $idContact['idLine'] . "' 
+                        AND contact_list.userId     = '" . $userId . "'";
+
+        $resultUpdate = CoreDB::getInstance()->updateDB($updateQuery);
+        return $resultUpdate;
+    }
+
+    public function isUpdated($statement)
+    {
+        $session = new ModelSessions;
+        if ($statement === true) {
+            $msg['updated'] = true;
+            $session->recordMessageInSession('update', $msg);
+            header("Location: /contact/index");
+        } else {
+            $msg['notUpdated'] = true;
+            $session->recordMessageInSession('update', $msg);
+        }
+    }
 }
