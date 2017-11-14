@@ -90,18 +90,16 @@ class CoreRouter
     private function callComponents($names)
     {
         $action = $names['action'];
-        if (class_exists($names['controller'])) {
-            if (method_exists($names['controller'], $names['action'])) {
-                $controllerObject = new $names['controller'];
-                $controllerObject->beforeCallAction($action, $names['parametersURI']);
-                $dataForPage = $controllerObject->$action($names['parametersURI']);
-                $viewRenderObject = new ViewRender($names['view'], $dataForPage);
-            } else {
-                throw new ExceptionErrorPage();
-            }
-        } else {
+        if (!class_exists($names['controller'])) {
             throw new ExceptionErrorPage();
         }
+        if (!method_exists($names['controller'], $names['action'])) {
+            throw new ExceptionErrorPage();
+        }
+        $controllerObject = new $names['controller'];
+        $controllerObject->beforeCallAction($action, $names['parametersURI']);
+        $dataForPage = $controllerObject->$action($names['parametersURI']);
+        $viewRenderObject = new ViewRender($names['view'], $dataForPage);
     }
 
 }
