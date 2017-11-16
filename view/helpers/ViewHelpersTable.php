@@ -23,7 +23,7 @@ class ViewHelpersTable
         $sort = 'ASC';
         foreach ($columnNames as $key => $value) {
             //$this->sortingTag = ($key == $order && $sort == 'ASC') ? '&#8593;' : (($key == $order && $sort == 'DESC') ? '&#8595;' : '');
-            $tableHeader .= "<th><a class=\"columnNames\" href=\"?order=$key&sort=$sort\">$value $this->sortingTag</a></th>";
+            $tableHeader .= "<th><a class=\"columnNames\" href=\"?$key/$sort\">$value $this->sortingTag</a></th>";
         }
         if (isset($additionalСolumns)){
             foreach ($additionalСolumns as $key => $value) {

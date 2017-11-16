@@ -5,7 +5,7 @@ abstract class CoreModel
 	function __construct()
     {
         foreach ($this->components as $key => $property) {
-        	$class = 'ModelComponent' . $property;
+        	$class = 'ModelBehaviour' . $property;
             $this->{$property} = new $class;
         }
     }

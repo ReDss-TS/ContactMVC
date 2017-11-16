@@ -6,9 +6,9 @@ class ControllerContact extends CoreController
     protected $components = ['Auth', 'Values', 'Phones'];
     protected $actionsRequireLogin = ['Index', 'Delete', 'Add'];
 
-    public function actionIndex()
+    public function actionIndex($param)
     {   
-        $selectedData = $this->ModelContact->selectDataForMainPage();
+        $selectedData = $this->ModelContact->selectDataForMainPage($param);
         return $selectedData;
     }
 

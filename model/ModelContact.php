@@ -2,7 +2,7 @@
 
 class ModelContact extends CoreModel
 {
-    protected $components = ['Validate'];
+    protected $components = ['Validate', 'Sorting'];
 
     protected $labelsOfContact = [
         'user_name',
@@ -36,15 +36,19 @@ class ModelContact extends CoreModel
         }
     }
 
-    public function selectDataForMainPage()
+    public function selectDataForMainPage($param)
     {
+        $order = $this->Sorting->getOrderBy($param);
+        $sort = $this->Sorting->getSortBy($param);
         $userId = $this->getUserID();
         $selectQuery = "SELECT contact_list.id, contact_list.firstName, contact_list.lastName, contact_list.email, contact_phones.phone
                             FROM contact_list 
                                 INNER JOIN contact_phones 
                                     ON contact_list.id = contact_phones.contactId
                                         WHERE contact_list.userId      = $userId
-                                        AND contact_list.favoritePhone = contact_phones.phoneType";
+                                        AND contact_list.favoritePhone = contact_phones.phoneType
+                                            ORDER BY $order $sort";
+                                                //LIMIT $pageFirstResult , $resultsPerPage";
 
         $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
         return $resultSelect;

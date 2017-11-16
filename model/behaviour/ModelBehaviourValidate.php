@@ -1,6 +1,6 @@
 <?php
 
-class ModelComponentValidate
+class ModelBehaviourValidate
 {
     public function validateData($data, $validationRules)
     {
