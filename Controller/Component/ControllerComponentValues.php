@@ -53,36 +53,4 @@ class ControllerComponentValues
         }
         return false;
     }
-
-    public function getValuesForUpdate($recordID)
-    {
-        $ModelContact = new ModelContact;
-        $selectedData = $ModelContact->selectAllData($recordID);
-        $selectedPhones = $ModelContact->selectPhones($recordID);
-
-        $phonesObj = new ControllerComponentPhones;
-        $phones = $phonesObj->sortPhonesByType($selectedPhones);
-
-        foreach ($selectedData as $key => $value) {
-            $valuesForUpdate = [
-                'selectedRadio' => $value['favoritePhone'],
-                'data' => [
-                    'user_name'     => $value['firstName'],
-                    'user_surname'  => $value['lastName'],
-                    'user_mail'     => $value['email'],
-                    'user_hPhone'   => $phones['hPhone'],
-                    'user_wPhone'   => $phones['wPhone'],
-                    'user_cPhone'   => $phones['cPhone'],
-                    'user_address1' => $value['address1'],
-                    'user_address2' => $value['address2'],
-                    'user_city'     => $value['city'],
-                    'user_state'    => $value['state'],
-                    'user_zip'      => $value['zip'],
-                    'user_country'  => $value['country'],
-                    'user_birthday' => $value['birthday'],
-                ]
-            ];
-        }
-        return $valuesForUpdate;
-    }
 }

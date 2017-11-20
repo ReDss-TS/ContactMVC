@@ -21,8 +21,8 @@ class ViewContactIndex extends CoreView
     public function renderData($data)
     {
         $renderedData = '';
-        if (!empty($data)) {
-            foreach ($data as $key => $value) {
+        if (!empty($data['contacts'])) {
+            foreach ($data['contacts'] as $key => $value) {
                 $renderedData .= "
                     <tr id = " . $value['id'] . ">
                         <td>" . $value['firstName'] . " </td>
@@ -36,5 +36,4 @@ class ViewContactIndex extends CoreView
         }
         return $renderedData;
     }
-
 }

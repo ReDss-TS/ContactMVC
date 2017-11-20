@@ -38,8 +38,9 @@ class ModelContact extends CoreModel
 
     public function selectDataForMainPage($param)
     {
-        $order = $this->Sorting->getOrderBy($param);
-        $sort = $this->Sorting->getSortBy($param);
+        $sortParams = $this->getSortParams($param);
+        $column = $sortParams['column'];
+        $sort = $sortParams['sort'];
         $userId = $this->getUserID();
         $selectQuery = "SELECT contact_list.id, contact_list.firstName, contact_list.lastName, contact_list.email, contact_phones.phone
                             FROM contact_list 
@@ -47,13 +48,22 @@ class ModelContact extends CoreModel
                                     ON contact_list.id = contact_phones.contactId
                                         WHERE contact_list.userId      = $userId
                                         AND contact_list.favoritePhone = contact_phones.phoneType
-                                            ORDER BY $order $sort";
+                                            ORDER BY $column $sort";
                                                 //LIMIT $pageFirstResult , $resultsPerPage";
 
         $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
         return $resultSelect;
     }
 
+    private function getSortParams($param)
+    {
+        $ViewContactIndex = new ViewContactIndex;
+
+        $column = $this->Sorting->getColumn($param, array_keys($ViewContactIndex->getColumnNames()));
+        $sortParams['column'] = ($column == 'phone') ? "contact_phones.". $column : "contact_list.". $column;
+        $sortParams['sort'] = $this->Sorting->getSortBy($param);
+        return $sortParams;
+    }
 
     public function deleteContacts($idLine)
     {
@@ -235,5 +245,30 @@ class ModelContact extends CoreModel
             $msg['notUpdated'] = true;
             $session->recordMessageInSession('update', $msg);
         }
+    }
+
+    public function getDataForEdit()
+    {
+        foreach ($selectedData as $key => $value) {
+            $dataForEdit = [
+                'selectedRadio' => $value['favoritePhone'],
+                'data' => [
+                    'user_name'     => $value['firstName'],
+                    'user_surname'  => $value['lastName'],
+                    'user_mail'     => $value['email'],
+                    'user_hPhone'   => $phones['hPhone'],
+                    'user_wPhone'   => $phones['wPhone'],
+                    'user_cPhone'   => $phones['cPhone'],
+                    'user_address1' => $value['address1'],
+                    'user_address2' => $value['address2'],
+                    'user_city'     => $value['city'],
+                    'user_state'    => $value['state'],
+                    'user_zip'      => $value['zip'],
+                    'user_country'  => $value['country'],
+                    'user_birthday' => $value['birthday'],
+                ]
+            ];
+        }
+        return $dataForEdit;
     }
 }

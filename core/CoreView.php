@@ -31,4 +31,12 @@ abstract class CoreView
     	$table = $renderTables->render($this->columnNames, $this->additionalСolumns, $dataForTable);
     	return $table;
     }
+
+    public function getColumnNames()
+    {
+        if (isset($this->columnNames)) {
+            return $this->columnNames;
+        }
+        return false;
+    }
 }

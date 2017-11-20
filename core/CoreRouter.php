@@ -18,14 +18,17 @@ class CoreRouter
     {
         $uri = $this->getURI();
         $uri = preg_split( "/(\/|\?)/", rtrim(filter_var($uri, FILTER_SANITIZE_URL), '/'));
-        $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0]; //TODO maybe that's not right
+        foreach ($uri as $key => $value) {
+           $uri = preg_split( "/(\/|\?)/", rtrim(filter_var($uri, FILTER_SANITIZE_URL), '/'));
+        }
+        $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0];
         $uri[1] = (empty($uri[1])) ? $this->defActionName : $uri[1];
 
         $componentsNames = $this->checkRoutes($uri[0]);
         $componentsNames = ($componentsNames == false) ? $this->getNames($uri) : $componentsNames;
 
         try {
-            $this->callComponents($componentsNames);
+            $this->callController($componentsNames, $uri);
         } catch (ExceptionErrorPage $e) {
             $e->createErrorPage('404');
         }    
@@ -87,7 +90,7 @@ class CoreRouter
      * Call controller action
      * @param array $names With names of controller, action and view
      */
-    private function callComponents($names)
+    private function callController($names, $uri)
     {
         $action = $names['action'];
         if (!class_exists($names['controller'])) {
@@ -96,9 +99,11 @@ class CoreRouter
         if (!method_exists($names['controller'], $names['action'])) {
             throw new ExceptionErrorPage();
         }
+        $uri = $uri[0] . '/' . $uri[1];
         $controllerObject = new $names['controller'];
         $controllerObject->beforeCallAction($action, $names['parametersURI']);
         $dataForPage = $controllerObject->$action($names['parametersURI']);
+        $dataForPage['uri'] = $uri;
         $viewRenderObject = new ViewRender($names['view'], $dataForPage);
     }
 

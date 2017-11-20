@@ -14,4 +14,15 @@ class ModelValidateUser extends CoreModel
             'isValidPass'
         ]
     ];
+
+    public function isBusyLogin($login)
+    {
+        $ModelUser = new ModelUser;
+        $selectedLogin = $ModelUser->selectPasswordByLogin($login);
+        if (is_object($selectedLogin)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

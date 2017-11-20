@@ -3,22 +3,22 @@
 class ControllerContact extends CoreController
 {   
     protected $models = ['ModelSessions', 'ModelContact', 'ModelValidateContact'];
-    protected $components = ['Auth', 'Values', 'Phones'];
+    protected $components = ['Auth', 'Values', 'Phones', 'Pagination'];
     protected $actionsRequireLogin = ['Index', 'Delete', 'Add'];
 
     public function actionIndex($param)
     {   
-        $selectedData = $this->ModelContact->selectDataForMainPage($param);
+        $selectedData['contacts'] = $this->ModelContact->selectDataForMainPage($param);
         return $selectedData;
     }
 
     public function actionDelete($param)
     {   
-        if (isset($param)) {
+        if (!isset($param)) {
+            throw new CoreExceptionHandler();
+        } else {
             $isDeleted = $this->ModelContact->deleteContacts($param[0]);
             $this->ModelContact->isDeleted($isDeleted);
-        } else {
-            throw new CoreExceptionHandler();
         }
     }
 
@@ -33,7 +33,7 @@ class ControllerContact extends CoreController
 
     public function actionEdit($param)
     {  
-        $inputValues = $this->Values->getValuesForUpdate($param[0]);
+        $inputValues = $this->getValuesForUpdate($param[0]);
         $formData['data'] = $inputValues['data'];
         $formData['validate'] = '';
         $formData['radio'] = $inputValues['selectedRadio'];
@@ -69,7 +69,7 @@ class ControllerContact extends CoreController
 
     private function editRecord($param)
     {
-        $formData = []; //TODO
+        $formData = [];
         $results = false;
         $inputValues = $this->getInputValues();
         $inputValues = $this->Values->addKeyToInputValues($inputValues);
@@ -90,7 +90,7 @@ class ControllerContact extends CoreController
         return $formData;
     }
 
-    private function getInputValues()
+    public function getInputValues()
     {
         $labelsOfContact = $this->ModelContact->getLabelsOfContact();
         $inputValues = [];
@@ -102,6 +102,15 @@ class ControllerContact extends CoreController
             }
         }
         return $inputValues;
+    }
+
+    public function getValuesForUpdate($recordID)
+    {
+        $selectedData = $this->ModelContact->selectAllData($recordID);
+        $selectedPhones = $this->ModelContact->selectPhones($recordID);
+        $phones = $this->Phones->sortPhonesByType($selectedPhones);
+        $data = $this->ModelContact->getDataForEdit($selectedData, $phones);
+        return $data;
     }
 
     private function insertData($data)

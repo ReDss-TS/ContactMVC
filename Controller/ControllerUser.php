@@ -39,7 +39,11 @@ class ControllerUser extends CoreController
     private function authentication()
     {
         $auth = $this->Auth->auth($_POST['user_login'], $_POST['user_pass']);
-        $auth['is_auth'] == true ? $this->ModelSessions->authenticationToSession($auth['user']['id'], $auth['user']['login']) : $this->ModelSessions->recordMessageInSession('auth', $auth);
+        if ($auth['is_auth'] === true) {
+            $this->ModelSessions->authenticationToSession($auth['user']['id'], $auth['user']['login']);
+        } else {
+            $this->ModelSessions->recordMessageInSession('auth', $auth);
+        }
     }
 
     private function registration()
@@ -52,7 +56,7 @@ class ControllerUser extends CoreController
 
         if (empty($noEmptyValidateList)) {
             try {
-                $result = $this->Register->register($arrayData['user_login'], $arrayData['user_pass']);
+                $result = $this->register($arrayData['user_login'], $arrayData['user_pass']);
                 $this->ModelSessions->recordMessageInSession('register', $result);
                 return '';
             } catch (Exception $e) {
@@ -61,5 +65,25 @@ class ControllerUser extends CoreController
         } else {
             return $validateList;
         }
+    }
+
+    public function register($ulogin, $upass)
+    {   
+        $msg = [];
+        $upass = md5(trim($upass));
+        $ModelUser = new ModelUser;
+        $ModelValidateUser = new ModelValidateUser;
+        
+        $isBusyLogin = $ModelValidateUser->isBusyLogin($ulogin);
+
+        if ($isBusyLogin === true) {
+            $msg['busyLogin'] = true;
+        } elseif ($isBusyLogin === false) {
+            $msg['registered'] = $ModelUser->insertUserIntoDB($ulogin, $upass);
+        } else {
+            throw new Exception('Error: User data not included');
+        }
+
+        return $msg;
     }
 }

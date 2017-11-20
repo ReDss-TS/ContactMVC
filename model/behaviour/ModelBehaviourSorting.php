@@ -2,7 +2,7 @@
 
 class ModelBehaviourSorting
 {
-    protected $sortBy = [
+    protected $columns = [
         'firstName',
         'lastName',
         'email',
@@ -26,46 +26,27 @@ class ModelBehaviourSorting
     public function changeSortBy()
     {
         $sort = $this->getSortBy();
-        if (isset($sort) && $sort == "ASC") {
+        if ($sort == "ASC") {
             $sort = "DESC";
         } else {
             $sort = "ASC";
         }
         return $sort;
     }
-    public function getOrder($param)
+    public function getColumn($param, $columns)
     {
         if (!isset($param[0])) {
-            $order = 'firstName';
+            $column = $columns[0];
         } else {
-            foreach ($this->sortBy as $key => $value) {
+            foreach ($columns as $key => $value) {
                 if ($param[0] == $value) {
-                    $order = $param[0];
+                    $column = $param[0];
                     break;
                 } else {
-                    $order = 'firstName';
+                    $column = $columns[0];
                 }
             }
         }
-        return $order;
-    }
-
-    public function getOrderBy($param)
-    {  
-        $order = $this->getOrder($param);
-        if (!isset($param[0])) {
-            //value by default
-            $tablePlusOrder = "contact_list.firstName";
-        } else {
-            if ($order == 'phone') {
-                //for contact_phones table
-                $tablePlusOrder = "contact_phones.". $order;
-            } else {
-                //for contact_list table
-                $tablePlusOrder = "contact_list.". $order;
-            }
-        }
-        return $tablePlusOrder;
-    }
-    
+        return $column;
+    }   
 }

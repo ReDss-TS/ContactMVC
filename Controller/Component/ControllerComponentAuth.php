@@ -2,7 +2,7 @@
 
 class ControllerComponentAuth
 {
-    public function auth($ulogin, $upass)
+    public function auth($ulogin, $upass) //TODO is it in Component or Controller?
     {   
         $msg = [
             'is_auth' => false,
