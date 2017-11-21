@@ -35,23 +35,6 @@ class ViewHelpersTable
         return $tableHeader;
     }
 
-    public function render($columnNames, $additionalСolumns, $dataForTable)
-    {
-        $headres = $this->tableHeaders($columnNames, $additionalСolumns);
-        $table = "
-            <div class = 'tableBlock' id = 'tableBlock'>
-                <table cellpadding = '10' id = 'table'>
-                    <tr>
-                        $headres
-                    </tr>
-                    $dataForTable
-                </table>
-            </div>
-            <br/>";
-
-        return $table;
-    }
-
     public function createBtn($typeBtn, $idLine)
     {
         $btn = "<form method = \"post\" action = ''>

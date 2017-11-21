@@ -17,7 +17,29 @@ class ViewContactIndex extends CoreView
         'edit'   => 'update',
         'delete' => 'delete'
     ];
-    
+
+    public function render($data)
+    {
+        $ViewHelpersTable = new ViewHelpersTable($data);
+        $ViewHelpersPagination = new ViewHelpersPagination();
+
+        $headres = $ViewHelpersTable->tableHeaders($this->columnNames, $this->additionalСolumns);
+        $dataForTable = $this->renderData($data);
+
+        $table = "
+            <div class = 'tableBlock' id = 'tableBlock'>
+                <table cellpadding = '10' id = 'table'>
+                    <tr>
+                        $headres
+                    </tr>
+                    $dataForTable
+                </table>
+            </div>
+            <br/>";
+
+        echo $table;
+    }
+
     public function renderData($data)
     {
         $renderedData = '';

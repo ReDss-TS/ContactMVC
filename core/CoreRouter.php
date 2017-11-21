@@ -17,9 +17,13 @@ class CoreRouter
     public function start()
     {
         $uri = $this->getURI();
-        $uri = preg_split( "/(\/|\?)/", rtrim(filter_var($uri, FILTER_SANITIZE_URL), '/'));
+        $uri = explode('/', rtrim(filter_var($uri, FILTER_SANITIZE_URL), '/'));
         foreach ($uri as $key => $value) {
-           $uri = preg_split( "/(\/|\?)/", rtrim(filter_var($uri, FILTER_SANITIZE_URL), '/'));
+            $explodeString = explode(':', rtrim(filter_var($value, FILTER_SANITIZE_URL), '/'));
+            if (count($explodeString) > 1){
+                unset($uri[$key]);
+                $uri[$explodeString[0]] = $explodeString[1];               
+            }
         }
         $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0];
         $uri[1] = (empty($uri[1])) ? $this->defActionName : $uri[1];
@@ -80,7 +84,7 @@ class CoreRouter
         $names['view']       = 'View' . ucfirst($uri[0]) . ucfirst($uri[1]);
 
         unset($uri[0], $uri[1]);
-        $uri = array_values($uri);
+        ksort($uri);
         $names['parametersURI'] = (!empty($uri)) ? $uri : '';
 
         return $names;

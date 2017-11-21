@@ -3,12 +3,13 @@
 class ControllerContact extends CoreController
 {   
     protected $models = ['ModelSessions', 'ModelContact', 'ModelValidateContact'];
-    protected $components = ['Auth', 'Values', 'Phones', 'Pagination'];
+    protected $components = ['Auth', 'Values', 'Phones'];
     protected $actionsRequireLogin = ['Index', 'Delete', 'Add'];
 
     public function actionIndex($param)
     {   
-        $selectedData['contacts'] = $this->ModelContact->selectDataForMainPage($param);
+        $numberOfRecords = $this->ModelContact->getCountFromContactList();
+        $selectedData['contacts'] = $this->ModelContact->selectDataForMainPage($param, $numberOfRecords);
         return $selectedData;
     }
 
@@ -17,7 +18,7 @@ class ControllerContact extends CoreController
         if (!isset($param)) {
             throw new CoreExceptionHandler();
         } else {
-            $isDeleted = $this->ModelContact->deleteContacts($param[0]);
+            $isDeleted = $this->ModelContact->deleteContacts($param[2]);
             $this->ModelContact->isDeleted($isDeleted);
         }
     }
@@ -33,13 +34,13 @@ class ControllerContact extends CoreController
 
     public function actionEdit($param)
     {  
-        $inputValues = $this->getValuesForUpdate($param[0]);
+        $inputValues = $this->getValuesForUpdate($param[2]);
         $formData['data'] = $inputValues['data'];
         $formData['validate'] = '';
         $formData['radio'] = $inputValues['selectedRadio'];
         
         if ($_POST) {    
-           $formData = $this->editRecord($param[0]);
+           $formData = $this->editRecord($param[2]);
         }
         return $formData;
     }

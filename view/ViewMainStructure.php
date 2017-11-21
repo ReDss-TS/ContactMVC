@@ -15,8 +15,8 @@
             $session = new ViewHelpersSessions();
             if (class_exists($view)) { //TODO
                 $content = new $view($data);
-                echo $session->showMessages();
-                echo $content->render($data);
+                $session->showMessages();
+                $content->render($data);
             }
         ?>
     

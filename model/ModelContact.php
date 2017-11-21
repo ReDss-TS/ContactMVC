@@ -2,7 +2,7 @@
 
 class ModelContact extends CoreModel
 {
-    protected $components = ['Validate', 'Sorting'];
+    protected $components = ['Validate', 'Sorting', 'Pagination'];
 
     protected $labelsOfContact = [
         'user_name',
@@ -36,11 +36,10 @@ class ModelContact extends CoreModel
         }
     }
 
-    public function selectDataForMainPage($param)
+    public function selectDataForMainPage($param, $numberOfRecords)
     {
         $sortParams = $this->getSortParams($param);
-        $column = $sortParams['column'];
-        $sort = $sortParams['sort'];
+        $limit = $this->Pagination->getLimitParams($param, $numberOfRecords);
         $userId = $this->getUserID();
         $selectQuery = "SELECT contact_list.id, contact_list.firstName, contact_list.lastName, contact_list.email, contact_phones.phone
                             FROM contact_list 
@@ -48,8 +47,8 @@ class ModelContact extends CoreModel
                                     ON contact_list.id = contact_phones.contactId
                                         WHERE contact_list.userId      = $userId
                                         AND contact_list.favoritePhone = contact_phones.phoneType
-                                            ORDER BY $column $sort";
-                                                //LIMIT $pageFirstResult , $resultsPerPage";
+                                            ORDER BY " . $sortParams['column'] . ' ' . $sortParams['sort'] . "
+                                                LIMIT " . $limit['pageFirstResult'] . ',' . $limit['resultsPerPage'] . "";
 
         $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
         return $resultSelect;
@@ -247,7 +246,7 @@ class ModelContact extends CoreModel
         }
     }
 
-    public function getDataForEdit()
+    public function getDataForEdit($selectedData, $phones)
     {
         foreach ($selectedData as $key => $value) {
             $dataForEdit = [
@@ -270,5 +269,18 @@ class ModelContact extends CoreModel
             ];
         }
         return $dataForEdit;
+    }
+
+    public function getCountFromContactList()
+    {
+        $userId = $this->getUserID();
+        $selectQuery = "SELECT COUNT(contact_list.id) AS amt 
+                        FROM contact_list, contact_phones 
+                            WHERE contact_list.id          = contact_phones.contactId 
+                            AND contact_list.userId        = $userId
+                            AND contact_list.favoritePhone = contact_phones.phoneType";
+
+        $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
+        return $resultSelect;
     }
 }
