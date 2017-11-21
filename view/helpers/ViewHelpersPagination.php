@@ -3,7 +3,7 @@
 class ViewHelpersPagination
 {
 
-    public function createPagination()
+    public function getPagination()
     {
         $pagination = '';
 
@@ -19,7 +19,7 @@ class ViewHelpersPagination
             //next button
             $pagination .= $this->nextButton();
 
-            $pagination.= "</div>\n";
+            $pagination .= "</div>\n";
         }
         $this->pagination = $pagination;
     }

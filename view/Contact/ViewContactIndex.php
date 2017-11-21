@@ -36,6 +36,7 @@ class ViewContactIndex extends CoreView
             <br/>";
 
         echo $table;
+        echo $this->Pagination->getPagination();
     }
 
     public function renderData($data)

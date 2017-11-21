@@ -16,7 +16,7 @@ class ModelBehaviourSorting
         return $sort;
     }
 
-    public function changeSortBy()
+    public function changeSortBy()//TODO
     {
         $sort = $this->getSortBy();
         if ($sort == "ASC") {

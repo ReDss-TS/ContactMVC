@@ -31,7 +31,7 @@ class ModelBehaviourPagination
     public function setProperties($curentPage, $numberOfRecords)
     {
         $this->pagination['resultsPerPage'] = $this->resultsPerPage;
-        $this->pagination['$adjacents'] = $this->adjacents;
+        $this->pagination['adjacents'] = $this->adjacents;
 
         $this->pagination['numberOfPages'] = ceil($numberOfRecords[0]['amt'] / $this->pagination['resultsPerPage']);
         $this->setCurentPage($curentPage);

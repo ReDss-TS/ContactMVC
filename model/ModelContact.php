@@ -21,6 +21,9 @@ class ModelContact extends CoreModel
         'user_birthday'
     ];
 
+    protected $sortParams;
+    protected $paginationParams;
+
     public function getLabelsOfContact()
     {
         return $this->labelsOfContact;
@@ -39,15 +42,18 @@ class ModelContact extends CoreModel
     public function selectDataForMainPage($param, $numberOfRecords)
     {
         $sortParams = $this->getSortParams($param);
+        $column = ($sortParams['column'] == 'phone') ? "contact_phones.". $sortParams['column'] : "contact_list.". $sortParams['column'];
         $limit = $this->Pagination->getLimitParams($param, $numberOfRecords);
+
         $userId = $this->getUserID();
+
         $selectQuery = "SELECT contact_list.id, contact_list.firstName, contact_list.lastName, contact_list.email, contact_phones.phone
                             FROM contact_list 
                                 INNER JOIN contact_phones 
                                     ON contact_list.id = contact_phones.contactId
                                         WHERE contact_list.userId      = $userId
                                         AND contact_list.favoritePhone = contact_phones.phoneType
-                                            ORDER BY " . $sortParams['column'] . ' ' . $sortParams['sort'] . "
+                                            ORDER BY " . $column . ' ' . $sortParams['sort'] . "
                                                 LIMIT " . $limit['pageFirstResult'] . ',' . $limit['resultsPerPage'] . "";
 
         $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
@@ -58,9 +64,8 @@ class ModelContact extends CoreModel
     {
         $ViewContactIndex = new ViewContactIndex($param); //TODO Can i do this? I give param but it is not needed
 
-        $column = $this->Sorting->getColumn($param, array_keys($ViewContactIndex->getColumnNames()));
-        $sortParams['column'] = ($column == 'phone') ? "contact_phones.". $column : "contact_list.". $column;
-        $sortParams['sort'] = $this->Sorting->getSortBy($param);
+        $sortParams['column'] = $this->Sorting->getColumn($param, array_keys($ViewContactIndex->getColumnNames()));
+        $sortParams['sort'] = $this->Sorting->getSortBy($param); 
         return $sortParams;
     }
 
