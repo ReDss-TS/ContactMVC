@@ -2,8 +2,9 @@
 
 class ViewContactIndex extends CoreView
 {
-    //what render (form or table or both)
-    protected $thatRender = ['table'];
+
+    protected $helpers = ['Sessions', 'Forms', 'Table', 'Pagination'];
+
     //table column names
     protected $columnNames = [
         'firstName' => 'First Name',
@@ -20,10 +21,7 @@ class ViewContactIndex extends CoreView
 
     public function render($data)
     {
-        $ViewHelpersTable = new ViewHelpersTable($data);
-        $ViewHelpersPagination = new ViewHelpersPagination();
-
-        $headres = $ViewHelpersTable->tableHeaders($this->columnNames, $this->additionalСolumns);
+        $headres = $this->Table->tableHeaders($this->columnNames, $this->additionalСolumns);
         $dataForTable = $this->renderData($data);
 
         $table = "

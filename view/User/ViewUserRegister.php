@@ -2,8 +2,7 @@
 
 class ViewUserRegister extends CoreView
 {
-    //what render (form or table or both)
-    protected $thatRender = ['form'];
+    protected $helpers = ['Sessions', 'Forms'];
     
     //elements for html form
     protected $elements  = [
@@ -26,4 +25,23 @@ class ViewUserRegister extends CoreView
             ]
     ];
     
+    public function render()
+    {
+        $html = '';
+        $html .= $this->Forms->startForm($this->elements);
+        foreach($this->structure as $field){
+            $html .= $this->renderInputField($field);
+        }
+        $html .= $this->Forms->submitBtn($this->elements);
+        $html .= $this->Forms->endForm();
+        echo $html;
+    }
+
+    private function renderInputField($field)
+    {
+        $renderedField = '';
+        $data = $this->Forms->getFieldData($field['name']);
+        $renderedField .= $this->Forms->renderInput($field, '', $data);
+        return $renderedField;
+    }
 }

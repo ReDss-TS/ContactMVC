@@ -56,7 +56,7 @@ class ModelContact extends CoreModel
 
     private function getSortParams($param)
     {
-        $ViewContactIndex = new ViewContactIndex;
+        $ViewContactIndex = new ViewContactIndex($param); //TODO Can i do this? I give param but it is not needed
 
         $column = $this->Sorting->getColumn($param, array_keys($ViewContactIndex->getColumnNames()));
         $sortParams['column'] = ($column == 'phone') ? "contact_phones.". $column : "contact_list.". $column;

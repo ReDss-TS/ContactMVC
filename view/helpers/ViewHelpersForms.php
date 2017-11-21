@@ -11,6 +11,8 @@ class ViewHelpersForms
         'radio'
     ];
 
+    protected $fieldData;
+
     function __construct($formData) {
         $this->data = $formData;       
     }
@@ -36,7 +38,7 @@ class ViewHelpersForms
         return $form;
     }
 
-    public function renderInput($name, $label, $typeOfInput)
+    public function getFieldData($name)
     {
         foreach ($this->dataKeys as $value) {
             $parameters[$value] = (isset($this->data[$value][$name])) ? $this->data[$value][$name] : '';
@@ -44,13 +46,19 @@ class ViewHelpersForms
                 $parameters[$value] = (isset($this->data[$value])) ? $this->data[$value] : '';
             }
         }
+        return $parameters;
+    }
 
-        $radioBtn = (method_exists(get_class($this), 'renderRadioBtn')) ? $this->renderRadioBtn($name, $parameters['radio']) : '';//TODO
-
+    public function renderInput($field, $radioBtn, $parameters)
+    {
+        $name = $field['name'];
+        $label = $field['label'];
+        $type = $field['type'];
+        
         $input = "<div class = \"field\">
                     <label for ='$name'>$label:</label>
                     $radioBtn
-                    <input class = \"text\" id = '$name' name = '$name' type = '$typeOfInput' value=\"" . $parameters['data'] . "\" />
+                    <input class = \"text\" id = '$name' name = '$name' type = '$type' value=\"" . $parameters['data'] . "\" />
                     <br/>
                     " . $parameters['validate'] . "
                     </div>";
@@ -68,15 +76,15 @@ class ViewHelpersForms
         return $btns;
     }
 
-    public function render($structure, $elements)
-    {
-        $html = '';
-        $html .= $this->startForm($elements);
-        foreach($structure as $field){
-            $html .= $this->renderInput($field['name'], $field['label'], $field['type']);
-        }
-        $html .= $this->submitBtn($elements);
-        $html .= $this->endForm();
-        return $html;
-    }
+    // public function render($structure, $elements)
+    // {
+    //     $html = '';
+    //     $html .= $this->startForm($elements);
+    //     foreach($structure as $field){
+    //         $html .= $this->renderInput($field['name'], $field['label'], $field['type']);
+    //     }
+    //     $html .= $this->submitBtn($elements);
+    //     $html .= $this->endForm();
+    //     return $html;
+    // }
 }

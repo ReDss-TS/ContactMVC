@@ -2,18 +2,14 @@
 
 abstract class CoreView
 {
-	public function render($data) //TODO I think it is not right
-	{
-		$content = '';
-		foreach ($this->thatRender as $key => $value) {
-			if ($value == 'form') {
-				$content .= $this->renderForm($data);
-			} elseif ($value == 'table') {
-				$content .= $this->renderTable($data);
-			}
-		}
-		return $content;
-	}
+
+    function __construct($data)
+    {
+        foreach ($this->helpers as $key => $property) {
+            $class = 'ViewHelpers' . $property;
+            $this->{$property} = new $class($data);
+        }
+    }
 
     public function renderForm($data)
     {
