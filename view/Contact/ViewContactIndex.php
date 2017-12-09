@@ -21,8 +21,8 @@ class ViewContactIndex extends CoreView
 
     public function render($data)
     {
-        $headres = $this->Table->tableHeaders($this->columnNames, $this->additionalСolumns);
-        $dataForTable = $this->renderData($data);
+        $headres = $this->Table->tableHeaders($this->columnNames, $this->additionalСolumns, $data['sorting'], $data['pagination']['page']);
+        $dataForTable = $this->renderData($data['contacts']);
 
         $table = "
             <div class = 'tableBlock' id = 'tableBlock'>
@@ -36,14 +36,14 @@ class ViewContactIndex extends CoreView
             <br/>";
 
         echo $table;
-        echo $this->Pagination->getPagination();
+        echo $this->Pagination->getPagination($data);
     }
 
     public function renderData($data)
     {
         $renderedData = '';
-        if (!empty($data['contacts'])) {
-            foreach ($data['contacts'] as $key => $value) {
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
                 $renderedData .= "
                     <tr id = " . $value['id'] . ">
                         <td>" . $value['firstName'] . " </td>

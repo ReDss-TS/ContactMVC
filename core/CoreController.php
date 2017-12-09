@@ -14,7 +14,7 @@ abstract class CoreController
             $this->{$property} = new $class;
         }
     }
-
+    
     public function beforeCallAction($action, $params)
     {
     	foreach ($this->actionsRequireLogin as $key => $value) {

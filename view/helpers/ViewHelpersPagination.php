@@ -2,11 +2,36 @@
 
 class ViewHelpersPagination
 {
+    protected $pagination;
+    //items to show per page
+    protected $resultsPerPage;
+    //adjacent pages
+    protected $adjacents;
+    //number Of Pages
+    protected $numberOfPages;
+    //first item to display on page
+    protected $pageFirstResult;
+    //active page
+    protected $page;
+    //previous page
+    protected $prevPage;
+    //next page
+    protected $nextPage;
+    //last page
+    protected $lastPage;
+    //last page minus 1
+    protected $lpm1;
+    //order by
+    protected $column;
+    //sort by
+    protected $sort;
+    //curent page uri
+    protected $targetpage;
 
-    public function getPagination()
+    public function getPagination($data)
     {
+        $this->setProperties($data);
         $pagination = '';
-
         if ($this->lastPage > 1) {
             $pagination .= "<div class=\"pagination\">";
 
@@ -21,12 +46,28 @@ class ViewHelpersPagination
 
             $pagination .= "</div>\n";
         }
-        $this->pagination = $pagination;
+        return $pagination;
+    }
+
+    private function setProperties($data)
+    {
+        $this->resultsPerPage  = (int)$data['pagination']['resultsPerPage'];
+        $this->adjacents       = (int)$data['pagination']['adjacents'];
+        $this->numberOfPages   = (int)$data['pagination']['numberOfPages'];
+        $this->pageFirstResult = (int)$data['pagination']['pageFirstResult'];
+        $this->page            = (int)$data['pagination']['page'];
+        $this->prevPage        = (int)$data['pagination']['prevPage'];
+        $this->nextPage        = (int)$data['pagination']['nextPage'];
+        $this->lastPage        = (int)$data['pagination']['lastPage'];
+        $this->lpm1            = (int)$data['pagination']['lpm1'];
+        $this->column          = $data['sorting']['column'];
+        $this->sort            = $data['sorting']['sort'];
+        $this->targetpage      = $data['uri'];
     }
 
     private function getLink($page, $name)
     {
-        return "<a href=\"$this->targetpage?page=$page&order=$this->order&sort=$this->sort\">$name</a>";
+        return "<a href=\"/$this->targetpage/page:$page/column:$this->column/sort:$this->sort\">$name</a>";
     }
 
     private function getThreeDots()

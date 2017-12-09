@@ -13,18 +13,15 @@ class ViewHelpersTable
         $this->data = $tableData;       
     }
 
-    public function tableHeaders($columnNames, $additionalСolumns)//TODO
+    public function tableHeaders($columnNames, $additionalСolumns, $sortParams, $page)
     {   
         $tableHeader = '';
-        // $orderObj = new Order;
-        // $sortObj = new Sort;
-        // $order = $orderObj->getOrder();
-        // $sort = $sortObj->changeSortBy();
-        $sort = 'ASC';
+        $column = $sortParams['column'];
+        $sort = $sortParams['sort'];
         foreach ($columnNames as $key => $value) {
-            //$this->sortingTag = ($key == $order && $sort == 'ASC') ? '&#8593;' : (($key == $order && $sort == 'DESC') ? '&#8595;' : '');
+            $this->sortingTag = ($key == $column && $sort == 'ASC') ? '&#8593;' : (($key == $column && $sort == 'DESC') ? '&#8595;' : '');
             $uri = $this->data['uri'];
-            $tableHeader .= "<th><a class=\"columnNames\" href=\"/$uri/column:$key/by:$sort\">$value $this->sortingTag</a></th>";
+            $tableHeader .= "<th><a class=\"columnNames\" href=\"/$uri/page:$page/column:$key/by:$sort\">$value $this->sortingTag</a></th>";
         }
         if (isset($additionalСolumns)){
             foreach ($additionalСolumns as $key => $value) {

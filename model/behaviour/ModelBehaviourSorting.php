@@ -16,9 +16,9 @@ class ModelBehaviourSorting
         return $sort;
     }
 
-    public function changeSortBy()//TODO
+    public function changeSortBy($param)//TODO
     {
-        $sort = $this->getSortBy();
+        $sort = $this->getSortBy($param);
         if ($sort == "ASC") {
             $sort = "DESC";
         } else {

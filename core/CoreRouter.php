@@ -27,10 +27,8 @@ class CoreRouter
         }
         $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0];
         $uri[1] = (empty($uri[1])) ? $this->defActionName : $uri[1];
-
         $componentsNames = $this->checkRoutes($uri[0]);
         $componentsNames = ($componentsNames == false) ? $this->getNames($uri) : $componentsNames;
-
         try {
             $this->callController($componentsNames, $uri);
         } catch (ExceptionErrorPage $e) {

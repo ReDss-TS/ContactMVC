@@ -21,12 +21,22 @@ class ModelContact extends CoreModel
         'user_birthday'
     ];
 
-    protected $sortParams;
-    protected $paginationParams;
+    protected $sortParams = '';
+    protected $paginationParams = '';
 
     public function getLabelsOfContact()
     {
         return $this->labelsOfContact;
+    }
+
+    public function getParamsSorting()
+    {
+        return $this->sortParams;
+    }
+
+    public function getParamsPagination()
+    {
+        return $this->paginationParams;
     }
 
     private function getUserID()
@@ -44,7 +54,7 @@ class ModelContact extends CoreModel
         $sortParams = $this->getSortParams($param);
         $column = ($sortParams['column'] == 'phone') ? "contact_phones.". $sortParams['column'] : "contact_list.". $sortParams['column'];
         $limit = $this->Pagination->getLimitParams($param, $numberOfRecords);
-
+        $this->paginationParams = $limit;
         $userId = $this->getUserID();
 
         $selectQuery = "SELECT contact_list.id, contact_list.firstName, contact_list.lastName, contact_list.email, contact_phones.phone
@@ -57,6 +67,7 @@ class ModelContact extends CoreModel
                                                 LIMIT " . $limit['pageFirstResult'] . ',' . $limit['resultsPerPage'] . "";
 
         $resultSelect = CoreDB::getInstance()->selectFromDB($selectQuery);
+        $this->sortParams['sort'] = $this->Sorting->changeSortBy($param);
         return $resultSelect;
     }
 
@@ -65,7 +76,9 @@ class ModelContact extends CoreModel
         $ViewContactIndex = new ViewContactIndex($param); //TODO Can i do this? I give param but it is not needed
 
         $sortParams['column'] = $this->Sorting->getColumn($param, array_keys($ViewContactIndex->getColumnNames()));
-        $sortParams['sort'] = $this->Sorting->getSortBy($param); 
+        $sortParams['sort'] = $this->Sorting->getSortBy($param); //TODO
+        //$this->Sorting->changeSortBy($param);
+        $this->sortParams = $sortParams;
         return $sortParams;
     }
 

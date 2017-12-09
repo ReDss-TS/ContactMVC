@@ -10,6 +10,8 @@ class ControllerContact extends CoreController
     {   
         $numberOfRecords = $this->ModelContact->getCountFromContactList();
         $selectedData['contacts'] = $this->ModelContact->selectDataForMainPage($param, $numberOfRecords);
+        $selectedData['sorting'] = $this->ModelContact->getParamsSorting();
+        $selectedData['pagination'] = $this->ModelContact->getParamsPagination();
         return $selectedData;
     }
 

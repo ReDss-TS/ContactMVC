@@ -32,8 +32,7 @@ class ModelBehaviourPagination
     {
         $this->pagination['resultsPerPage'] = $this->resultsPerPage;
         $this->pagination['adjacents'] = $this->adjacents;
-
-        $this->pagination['numberOfPages'] = ceil($numberOfRecords[0]['amt'] / $this->pagination['resultsPerPage']);
+        $this->pagination['numberOfPages'] = ceil((int)$numberOfRecords[0]['amt'] / $this->pagination['resultsPerPage']);
         $this->setCurentPage($curentPage);
         $this->pagination['pageFirstResult'] = ($this->pagination['page'] - 1) * $this->pagination['resultsPerPage'];
         $this->pagination['prevPage'] = $this->pagination['page'] - 1;
@@ -46,7 +45,6 @@ class ModelBehaviourPagination
     {
         $this->setProperties($param, $numberOfRecords);
         return $this->pagination;
-
     }
 
     private function setCurentPage($curentPage)
@@ -54,9 +52,9 @@ class ModelBehaviourPagination
         if (!isset($curentPage['page'])) {
             $this->pagination['page'] = 1;
         } else {
-            $this->pagination['page'] = ceil($curentPage['page']);
+            $this->pagination['page'] = ceil((int)$curentPage['page']);
             //if the page is missing then move to 1 page
-            if ($this->pagination['page'] > $this->numberOfPages || $this->pagination['page'] < 1) {
+            if ($this->pagination['page'] > $this->pagination['numberOfPages'] || $this->pagination['page'] < 1) {
                 header("Location: /page:1");
             }
         }
