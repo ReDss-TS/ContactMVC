@@ -2,15 +2,19 @@
 
 class ModelSessions extends CoreModel
 {   
+    protected $components = ['Validate'];
+    
     protected $msgs = [
         'login'      => 'Login is incorrect',
         'pass'       => 'Password is incorrect',
-        'deleted'    => 'Record deleted successfully!',
-        'notDelete'  => 'Record has not been deleted!',
+        'deleted'    => 'Record deleted successfully',
+        'notDelete'  => 'Record has not been deleted',
         'busyLogin'  => 'Login is busy! Please enter another login',
-        'registered' => 'You have successfully registered!',
-
-
+        'registered' => 'You have successfully registered',
+        'add'        => 'New record created successfully',
+        'notAdd'     => 'New record not created',
+        'updated'    => 'Record update successfully',
+        'notUpdated' => 'New record not updated'
     ];
 
     public function issetLogin() 

@@ -11,6 +11,6 @@ class ViewHelpersSessions
             }
         }
         unset($_SESSION['message']);
-        return $messages;
+        echo $messages;
     }
 }

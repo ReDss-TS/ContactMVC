@@ -1,13 +1,13 @@
 <?php
 
-class ViewContactAdd extends CoreView
+class ViewContactEdit extends CoreView
 {
     protected $helpers = ['Sessions', 'Forms'];
     
     //elements for html form
     protected $elements  = [
-            'header'     => 'Add Contact',
-            'submitBtn'  => 'Add',
+            'header'     => 'Edit Contact',
+            'submitBtn'  => 'Done',
             'backBtn'    => 'contact/index'
     ];
 

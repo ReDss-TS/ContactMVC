@@ -9,6 +9,7 @@ class ViewRender
      */
     function __construct($view, $data) {
     	$data = $this->sanitizeSpecialChars($data);
+        ob_start(); //TODO
         include "view/ViewMainStructure.php";
     }
 

@@ -18,14 +18,19 @@ class CoreRouter
     {
         $uri = $this->getURI();
         $uri = explode('/', rtrim(filter_var($uri, FILTER_SANITIZE_URL), '/'));
-        $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0]; //TODO maybe that's not right
+        foreach ($uri as $key => $value) {
+            $explodeString = explode(':', rtrim(filter_var($value, FILTER_SANITIZE_URL), '/'));
+            if (count($explodeString) > 1){
+                unset($uri[$key]);
+                $uri[$explodeString[0]] = $explodeString[1];               
+            }
+        }
+        $uri[0] = (empty($uri[0])) ? $this->defControllerName : $uri[0];
         $uri[1] = (empty($uri[1])) ? $this->defActionName : $uri[1];
-
         $componentsNames = $this->checkRoutes($uri[0]);
         $componentsNames = ($componentsNames == false) ? $this->getNames($uri) : $componentsNames;
-
         try {
-            $this->callComponents($componentsNames);
+            $this->callController($componentsNames, $uri);
         } catch (ExceptionErrorPage $e) {
             $e->createErrorPage('404');
         }    
@@ -77,7 +82,7 @@ class CoreRouter
         $names['view']       = 'View' . ucfirst($uri[0]) . ucfirst($uri[1]);
 
         unset($uri[0], $uri[1]);
-        sort($uri);
+        ksort($uri);
         $names['parametersURI'] = (!empty($uri)) ? $uri : '';
 
         return $names;
@@ -87,21 +92,21 @@ class CoreRouter
      * Call controller action
      * @param array $names With names of controller, action and view
      */
-    private function callComponents($names)
+    private function callController($names, $uri)
     {
         $action = $names['action'];
-        if (class_exists($names['controller'])) {
-            if (method_exists($names['controller'], $names['action'])) {
-                $controllerObject = new $names['controller'];
-                $controllerObject->beforeFilter($action, $names['parametersURI']);
-                $dataForPage = $controllerObject->$action($names['parametersURI']);
-                $viewRenderObject = new ViewRender($names['view'], $dataForPage);
-            } else {
-                throw new ExceptionErrorPage();
-            }
-        } else {
+        if (!class_exists($names['controller'])) {
             throw new ExceptionErrorPage();
         }
+        if (!method_exists($names['controller'], $names['action'])) {
+            throw new ExceptionErrorPage();
+        }
+        $uri = $uri[0] . '/' . $uri[1];
+        $controllerObject = new $names['controller'];
+        $controllerObject->beforeCallAction($action, $names['parametersURI']);
+        $dataForPage = $controllerObject->$action($names['parametersURI']);
+        $dataForPage['uri'] = $uri;
+        $viewRenderObject = new ViewRender($names['view'], $dataForPage);
     }
 
 }

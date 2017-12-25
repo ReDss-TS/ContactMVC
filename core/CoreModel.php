@@ -2,13 +2,17 @@
 
 abstract class CoreModel
 {
-    public function requireLogin()
+	function __construct()
     {
-        $signIn = new ModelSessions;
-        $isSignIn = $signIn->issetLogin();
-        if (!$isSignIn == true) {
-            header("Location: /user/login");
+        foreach ($this->components as $key => $property) {
+        	$class = 'ModelBehaviour' . $property;
+            $this->{$property} = new $class;
         }
-        
     }
+
+	public function validateData($data)
+	{
+		$errorList = $this->Validate->validateData($data, $this->validationRules);
+		return $errorList;
+	}
 }

@@ -1,7 +1,10 @@
 <?php
 
-class ViewContactIndex extends ViewHelpersTable
+class ViewContactIndex extends CoreView
 {
+
+    protected $helpers = ['Sessions', 'Forms', 'Table', 'Pagination'];
+
     //table column names
     protected $columnNames = [
         'firstName' => 'First Name',
@@ -15,7 +18,27 @@ class ViewContactIndex extends ViewHelpersTable
         'edit'   => 'update',
         'delete' => 'delete'
     ];
-    
+
+    public function render($data)
+    {
+        $headres = $this->Table->tableHeaders($this->columnNames, $this->additionalСolumns, $data['sorting'], $data['pagination']['page']);
+        $dataForTable = $this->renderData($data['contacts']);
+
+        $table = "
+            <div class = 'tableBlock' id = 'tableBlock'>
+                <table cellpadding = '10' id = 'table'>
+                    <tr>
+                        $headres
+                    </tr>
+                    $dataForTable
+                </table>
+            </div>
+            <br/>";
+
+        echo $table;
+        echo $this->Pagination->getPagination($data);
+    }
+
     public function renderData($data)
     {
         $renderedData = '';
@@ -34,5 +57,4 @@ class ViewContactIndex extends ViewHelpersTable
         }
         return $renderedData;
     }
-
 }
